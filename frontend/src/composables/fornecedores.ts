@@ -1,5 +1,9 @@
+import { ApiErrorHandler } from "@/service/error-handler-exceptions";
 import { fornecedorService } from "@/service/fornecerdores-service";
 import type {
+  Contato,
+  ContatosFornecedor,
+  CreateContatoDto,
   CreateFornecedorDto,
   Fornecedor,
   SearchFornecedorDto,
@@ -9,9 +13,10 @@ import { ref, computed } from "vue";
 
 export function useFornecedores() {
   const fornecedores = ref<Fornecedor[]>([]);
+  const contatosFornecedo = ref<Contato[]>([]);
   const fornecedor = ref<Fornecedor | null>(null);
   const loading = ref(false);
-  const error = ref<string | null>(null);
+  const errorForn = ref<string | null>(null);
   const totalItems = ref(0);
   const currentPage = ref(1);
   const itemsPerPage = ref(10);
@@ -23,7 +28,7 @@ export function useFornecedores() {
   const isEmpty = computed(() => !hasData.value && !loading.value);
 
   const clearError = () => {
-    error.value = null;
+    errorForn.value = null;
   };
 
   const setLoading = (value: boolean) => {
@@ -32,9 +37,21 @@ export function useFornecedores() {
   };
 
   const handleError = (err: any) => {
-    console.error("Erro no fornecedores service:", err);
-    error.value =
-      err.response?.data?.message || err.message || "Erro desconhecido";
+    const error = ApiErrorHandler.handle(err);
+    errorForn.value = error.message;
+  };
+
+  const find = async (id: number) => {
+    try {
+      setLoading(true);
+      const response = await fornecedorService.findId(id);
+      fornecedor.value = response;
+    } catch (err) {
+      handleError(err);
+      fornecedores.value = [];
+    } finally {
+      setLoading(false);
+    }
   };
 
   const fetchFornecedores = async (params?: SearchFornecedorDto) => {
@@ -113,6 +130,48 @@ export function useFornecedores() {
     }
   };
 
+  //methodos de criação de contato do fornecedor
+  const getContatoFornecedor = async (fornecedor_id: number) => {
+    try {
+      setLoading(true);
+      const response = await fornecedorService.getContato(fornecedor_id);
+
+      if (response.data) {
+        console.log(response);
+        contatosFornecedo.value = response.data;
+      }
+
+      return response;
+    } catch (err) {
+      handleError(err);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const createContatoFornecedor = async (
+    fornecedor_id: number,
+    data: CreateContatoDto[]
+  ) => {
+    try {
+      setLoading(true);
+      const response = await fornecedorService.createContato(fornecedor_id, {
+        contatos: data,
+      });
+
+      if (response.data) {
+      //  contatosFornecedo.value.unshift(response);
+      }
+      return response;
+    } catch (err) {
+      handleError(err);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const clearData = () => {
     fornecedores.value = [];
     fornecedor.value = null;
@@ -124,18 +183,22 @@ export function useFornecedores() {
   return {
     fornecedores,
     fornecedor,
+    contatosFornecedo,
     loading,
-    error,
+    errorForn,
     totalItems,
     currentPage,
     itemsPerPage,
     totalPages,
     hasData,
     isEmpty,
+    find,
     fetchFornecedores,
     createFornecedor,
     updateFornecedor,
     removeFornecedor,
+    getContatoFornecedor,
+    createContatoFornecedor,
     clearData,
     clearError,
   };

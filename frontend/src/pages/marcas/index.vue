@@ -5,13 +5,13 @@
                 <v-row align="center" justify="space-between">
                     <v-col>
                         <div class="d-flex align-center">
-                            <v-icon class="me-2">mdi-truck</v-icon>
+                            <v-icon class="me-2">mdi-tag-check-outline</v-icon>
                             <v-breadcrumbs :items="breadcrumps"></v-breadcrumbs>
                         </div>
                     </v-col>
                     <v-col cols="auto">
-                        <v-btn href="/fornecedores/new" color="primary" prepend-icon="mdi-plus">
-                            Novo Fornecedor
+                        <v-btn href="/marcas/new" color="primary" prepend-icon="mdi-plus-circle-outline">
+                            Novo Marca
                         </v-btn>
                     </v-col>
                 </v-row>
@@ -19,21 +19,14 @@
 
             <v-card-text>
                 <v-row class="mb-4">
-                    <v-col cols="12" md="3">
-                        <v-mask-input v-model="cnpj" :mask="cnpjMask" label="CNPJ" hide-details @input="debouncedSearch"
-                            @blur="debouncedSearch" />
-                    </v-col>
                     <v-col cols="12" md="4">
                         <v-text-field input-class="input-controll" v-model="search" prepend-inner-icon="mdi-magnify"
-                            label="Buscar fornecedores..." hide-details @input="debouncedSearch" />
+                            label="Buscar marcas..." hide-details @input="debouncedSearch" />
                     </v-col>
                 </v-row>
 
-                <v-data-table-server v-model:items-per-page="itemsPerPage" :headers="headers" :items="fornecedores"
+                <v-data-table-server v-model:items-per-page="itemsPerPage" :headers="headers" :items="marcas"
                     :items-length="totalItems" :loading="loading" item-value="id" @update:options="loadItems">
-                    <template #item.cnpj="{ item }">
-                        {{ formatCnpj(item.cnpj) }}
-                    </template>
                     <template #item.createdAt="{ item }">
                         {{ formatDate(item.createdAt) }}
                     </template>
@@ -49,8 +42,8 @@
 
                     <template #no-data>
                         <div class="text-center py-4">
-                            <v-icon size="64" color="grey">mdi-truck-outline</v-icon>
-                            <p class="text-h6 mt-2">Nenhum fornecedor encontrado</p>
+                            <v-icon size="64" color="grey">mdi-tag-check-outline</v-icon>
+                            <p class="text-h6 mt-2">Nenhum marca encontrado</p>
                         </div>
                     </template>
                 </v-data-table-server>
@@ -62,7 +55,7 @@
             <v-card>
                 <v-card-title>Confirmar Exclusão</v-card-title>
                 <v-card-text>
-                    Tem certeza que deseja excluir o fornecedor <strong>{{ selectedFornecedor?.nome }}</strong>?
+                    Tem certeza que deseja excluir o marca <strong>{{ serlectMarca?.nome }}</strong>?
                     Esta ação não pode ser desfeita.
                 </v-card-text>
                 <v-card-actions>
@@ -76,25 +69,29 @@
 </template>
 
 <script lang="ts" setup>
-import { useFornecedores } from "@/composables/fornecedores"
-import type { Fornecedor } from "@/types/fornecedores-type"
 import { ref, onMounted, watch } from "vue"
 import { format } from "date-fns";
+import useToastCustom from "@/composables/toastCustom";
+import { useRouter } from "vue-router";
+import { useMarcas } from "@/composables/marcas";
+import type { Marca } from "@/types/marcas.type";
+const router = useRouter();
+const toast = new useToastCustom()
 
 const breadcrumps = [
-    { title: 'Fornecedores', href: '/fornecedores' },
+    { title: 'Marcas', href: '/marcas' },
 ]
 
 const {
-    fornecedores,
+    marcas,
     loading,
-    error,
+    errorMarca,
     totalItems,
     currentPage,
     itemsPerPage,
-    fetchFornecedores,
-    removeFornecedor
-} = useFornecedores()
+    fetchMarca,
+    removerMarca
+} = useMarcas()
 
 // Estado local
 const search = ref("")
@@ -106,18 +103,11 @@ const cnpjMask = {
     }
 };
 
-const showCreateDialog = ref(false)
 const deleteDialog = ref(false)
-const selectedFornecedor = ref<Fornecedor | null>(null)
+const serlectMarca = ref<Marca | null>(null)
 
 // Headers da tabela
 const headers = ref([
-    {
-        title: "CNPJ",
-        align: "start",
-        sortable: false,
-        key: "cnpj",
-    },
     { title: "Nome", key: "nome", align: "start" },
     { title: "Criado em", key: "createdAt", align: "start", sortable: false },
     { title: "Atualizado em", key: "updatedAt", align: "start", sortable: false },
@@ -139,11 +129,10 @@ const loadItems = ({ page, itemsPerPage: perPage }: { page: number, itemsPerPage
 }
 
 const fetchData = async () => {
-    await fetchFornecedores({
+    await fetchMarca({
         page: currentPage.value,
         limit: itemsPerPage.value,
         nome: search.value || undefined,
-        cnpj: cnpj.value.replace(/\D/g, '') || undefined
     })
 }
 
@@ -159,30 +148,29 @@ const viewFornecedor = (id: number) => {
 }
 
 const editFornecedor = (id: number) => {
-    console.log('Editar fornecedor:', id)
+    router.push('/marcas/edit/' + id)
 }
 
-const confirmDelete = (fornecedor: Fornecedor) => {
-    selectedFornecedor.value = fornecedor
+const confirmDelete = (fornecedor: Marca) => {
+    serlectMarca.value = fornecedor
     deleteDialog.value = true
 }
 
 const deleteFornecedor = async () => {
-    if (!selectedFornecedor.value) return
+    if (!serlectMarca.value) return
 
     try {
-        await removeFornecedor(selectedFornecedor.value.id)
+        await removerMarca(serlectMarca.value.id)
         deleteDialog.value = false
-        selectedFornecedor.value = null
+        serlectMarca.value = null
     } catch (error) {
         console.error('Erro ao excluir fornecedor:', error)
     }
 }
 
-watch(error, (newError) => {
+watch(errorMarca, (newError) => {
     if (newError) {
-        console.error('Erro:', newError)
-
+        toast.error(newError);
     }
 })
 //equivalente ao useeffect no react

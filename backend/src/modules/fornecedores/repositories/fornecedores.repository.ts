@@ -25,7 +25,11 @@ export class FornecedoresRepository extends Repository<Fornecedores> {
 
   async findByPK(id: number): Promise<Fornecedores | null> {
     return this.repository.findOne({
-      relations: ['endereco'],
+      relations: [
+        'endereco',
+        'endereco.municipio',
+        'endereco.municipio.estado',
+      ],
       where: { id, status: 'ACTIVE' },
     });
   }

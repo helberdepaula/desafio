@@ -12,6 +12,16 @@
             <v-list-item v-for="(item, i) in linksNav" :title="item.title" :prepend-icon="item.icon" :to="item.to"
               :key="i" :value="item" color="primary" rounded="shaped">
             </v-list-item>
+
+            <v-list-group value="Users">
+              <template v-slot:activator="{ props }">
+                <v-list-item v-bind="props" prepend-icon="mdi-cogs" title="Users" color="primary"
+                  rounded="shaped"></v-list-item>
+              </template>
+              <v-list-item v-for="(admin, i) in admins" :key="i" :prepend-icon="admin.icon" :title="admin.title"
+                :to="admin.to" :value="admin.title" color="primary" rounded="shaped"></v-list-item>
+            </v-list-group>
+
             <v-divider />
             <v-list-item title="Sair" prepend-icon="mdi-logout" @click="logout" link />
           </v-list>
@@ -23,12 +33,13 @@
           </template>
         </v-app-bar>
 
-        <v-main >
-          <v-container >
+        <v-main>
+          <v-container>
             <router-view />
           </v-container>
         </v-main>
       </v-layout>
+      <Toaster position="top-right" />
     </template>
     <template v-else>
       <v-main>
@@ -38,16 +49,31 @@
   </v-app>
 </template>
 
-
 <script lang="ts" setup>
+import { Toaster } from 'vue-sonner'
 import { computed, ref } from "vue";
 import { useRoute } from "vue-router";
 import { useAuth } from "./composables/auth";
+import 'vue-sonner/style.css'
+
 const route = useRoute();
 const drawer = ref(true)
 
 const { isAuthenticated, user, logout } = useAuth();
 const isLoginPage = computed(() => route.path === "/login");
+
+const admins = [
+  {
+    title: 'Marcas',
+    to: '/marcas',
+    icon: 'mdi-tag-check-outline',
+  },
+  {
+    title: 'Categorias',
+    to: '/categorias',
+    icon: 'mdi-umbrella-beach',
+  },
+]
 
 const linksNav = [
   {

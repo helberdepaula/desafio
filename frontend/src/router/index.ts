@@ -6,7 +6,8 @@
 
 // Composables
 import { authGuard, guestGuard } from "@/middleware/auth";
-import FornecedoresNew from "@/pages/fornecedoresNew.vue";
+import FornecedoresEdit from "@/pages/fornecedores/fornecedoresEdit.vue";
+import FornecedoresNew from "@/pages/fornecedores/fornecedoresNew.vue";
 import { createRouter, createWebHistory } from "vue-router";
 import { routes } from "vue-router/auto-routes";
 
@@ -15,6 +16,12 @@ routes.push({
   path: "/fornecedores/new",
   name: "FornecedoresNew",
   component: FornecedoresNew,
+});
+
+routes.push({
+  path: "/fornecedores/edit/:id",
+  name: "FornecedoresEdit",
+  component: FornecedoresEdit,
 });
 
 const router = createRouter({

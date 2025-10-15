@@ -7,6 +7,15 @@ export class ApiErrorHandler {
       const response = error.response;
 
       if (response?.data) {
+        if (typeof response.data.message === "object") {
+          const allErrors = Object.values(response.data.message).flat();
+          return {
+            message: allErrors.join("<br/> ") || "Erro na requisição",
+            status: response.status,
+            errors: response.data.errors,
+          };
+        }
+
         return {
           message: response.data.message || "Erro na requisição",
           status: response.status,
