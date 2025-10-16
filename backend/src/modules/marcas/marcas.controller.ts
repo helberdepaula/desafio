@@ -18,7 +18,12 @@ import {
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
-import { createrMarcas, getListJsonMarcas, getListMarcas, updateMarcas } from './swagger/marcas.swagger';
+import {
+  createrMarcas,
+  getListJsonMarcas,
+  getListMarcas,
+  updateMarcas,
+} from './swagger/marcas.swagger';
 import { CreateMarcaDto } from './dto/create-marca.dto';
 import { UpdateMarcaDto } from './dto/update-marca.dto';
 import { MarcasSearchDto } from './dto/marcasSearch.dtos';
@@ -54,6 +59,19 @@ export class MarcasController {
   })
   findAll(@Query() data: MarcasSearchDto) {
     return this.marcasService.findAll(data);
+  }
+
+  @Get(':id')
+  @ApiOperation({ summary: 'Obtem uma lista de marcas com paginação' })
+  @ApiResponse({
+    status: 200,
+    ...{ id: 1, nome: 'marca' },
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Não autorizado',
+  })
+  find(@Param('id') id: number) {
+    return this.marcasService.find(id);
   }
 
   @Post()
