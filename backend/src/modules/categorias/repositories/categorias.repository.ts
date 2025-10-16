@@ -1,4 +1,4 @@
-import { Raw, Repository } from 'typeorm';
+import { Not, Raw, Repository } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CategoriasEntity } from '../entities/categoria.entity';
@@ -52,4 +52,16 @@ export class CategoriasRepository extends Repository<CategoriasEntity> {
 
     return this.repository.find({ where: whereParam });
   }
+
+    async findByName(name: string): Promise<CategoriasEntity | null> {
+      return this.repository.findOne({
+        where: { nome: name },
+      });
+    }
+  
+    async findByNameISNOT(id: number, name: string): Promise<CategoriasEntity | null> {
+      return this.repository.findOne({
+        where: { id: Not(id), nome: Raw((alias) => `${alias} ILIKE '%${name}%'`) },
+      });
+    }
 }
