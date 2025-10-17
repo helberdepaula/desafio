@@ -225,7 +225,7 @@
     "@jridgewell/resolve-uri" "^3.1.0"
     "@jridgewell/sourcemap-codec" "^1.4.14"
 
-"@mdi/font@7.4.47":
+"@mdi/font@^7", "@mdi/font@7.4.47":
   version "7.4.47"
   resolved "https://registry.npmjs.org/@mdi/font/-/font-7.4.47.tgz"
   integrity sha512-43MtGpd585SNzHZPcYowu/84Vz2a2g31TvPMTm9uTiCSWzaheQySUcSyUH/46fPnuPQWof2yd0pGBtzee/IQWw==
@@ -2461,6 +2461,16 @@ util-deprecate@^1.0.2:
   resolved "https://registry.npmjs.org/util-deprecate/-/util-deprecate-1.0.2.tgz"
   integrity sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==
 
+v-money@^0.8.1:
+  version "0.8.1"
+  resolved "https://registry.npmjs.org/v-money/-/v-money-0.8.1.tgz"
+  integrity sha512-raz87AP5F2YEpv1GAocI3SC/y9af1+TQeZQIhAK5UNovho6dnh6RQBa5UG8ZNC+BPLpUh5VECi7EWTjr4+4s1g==
+
+v-money3@^3.24.1:
+  version "3.24.1"
+  resolved "https://registry.npmjs.org/v-money3/-/v-money3-3.24.1.tgz"
+  integrity sha512-nGnxS06jkNsVzkuMQJ/0we6PSA4HO7jH1B7NeCF3Tv7Xm61poEUW7D1fdXXWR0IWLWneMSsCt3d4YQo6fTeBZA==
+
 varint@^6.0.0:
   version "6.0.0"
   resolved "https://registry.npmjs.org/varint/-/varint-6.0.0.tgz"
@@ -2502,6 +2512,11 @@ vscode-uri@^3.0.8:
   resolved "https://registry.npmjs.org/vscode-uri/-/vscode-uri-3.1.0.tgz"
   integrity sha512-/BpdSx+yCQGnCvecbyXdxHDkuk55/G3xwnC0GqY4gmQ3j+A+g8kzzgB4Nk/SINjqn6+waqw3EgbVF2QKExkRxQ==
 
+vue-currency-input@^3.2.1:
+  version "3.2.1"
+  resolved "https://registry.npmjs.org/vue-currency-input/-/vue-currency-input-3.2.1.tgz"
+  integrity sha512-Osfxzdu5cdZSCS4Cm0vuk7LwNeSdHWGIWK8gtDBC1kU0UtAKz7iU/8dyJ0KDJKxbAYiKeovoQTRfYxCH82I0EA==
+
 vue-eslint-parser@^10.0.0, vue-eslint-parser@^10.2.0:
   version "10.2.0"
   resolved "https://registry.npmjs.org/vue-eslint-parser/-/vue-eslint-parser-10.2.0.tgz"
@@ -2534,7 +2549,7 @@ vue-tsc@^3.0.7:
     "@volar/typescript" "2.4.23"
     "@vue/language-core" "3.1.1"
 
-"vue@^2.7.0 || ^3.2.25", "vue@^2.7.0 || ^3.5.11", vue@^3.0.0, vue@^3.2.0, vue@^3.2.25, vue@^3.4.0, vue@^3.4.26, vue@^3.5.0, vue@^3.5.21, "vue@2 || 3", vue@3.5.22:
+"vue@^2.7 || ^3.0.0", "vue@^2.7.0 || ^3.2.25", "vue@^2.7.0 || ^3.5.11", vue@^3, vue@^3.0.0, vue@^3.2.0, vue@^3.2.25, vue@^3.4.0, vue@^3.4.26, vue@^3.5.0, vue@^3.5.21, "vue@>= 3.2.0", "vue@2 || 3", vue@3.5.22:
   version "3.5.22"
   resolved "https://registry.npmjs.org/vue/-/vue-3.5.22.tgz"
   integrity sha512-toaZjQ3a/G/mYaLSbV+QsQhIdMo9x5rrqIpYRObsJ6T/J+RyCSFwN2LHNVH9v8uIcljDNa3QzPVdv3Y6b9hAJQ==
@@ -2545,7 +2560,16 @@ vue-tsc@^3.0.7:
     "@vue/server-renderer" "3.5.22"
     "@vue/shared" "3.5.22"
 
-vuetify@^3.0.0, vuetify@^3.10.1:
+"vuetify-money-3@github:mibsbalsante/vuetify-money-3":
+  version "2.0.2"
+  resolved "git+ssh://git@github.com/mibsbalsante/vuetify-money-3.git#7b45977e1d01880af7b126a9935bc79c93bd6ecd"
+
+vuetify-money@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.npmjs.org/vuetify-money/-/vuetify-money-1.2.0.tgz"
+  integrity sha512-YVxO2bNE9HIgRZmF/d3ol4DJrJrbnptzrd72D5KpUxaSyjx0+8bTxUStGRYIHPoFsnUH/uCJOuZkGSVhbdqf3A==
+
+vuetify@^3, vuetify@^3.0.0, vuetify@^3.10.1:
   version "3.10.5"
   resolved "https://registry.npmjs.org/vuetify/-/vuetify-3.10.5.tgz"
   integrity sha512-3h1onfjcj04B+LJ0cXvGrOOe6C3652JAlyUAuGKgQXwhP9Oe1hAfdM6+svXR5Dt1xC39lQEGqJdacZtwisUEoQ==
@@ -2597,7 +2621,7 @@ yocto-queue@^0.1.0:
   resolved "https://registry.npmjs.org/yocto-queue/-/yocto-queue-0.1.0.tgz"
   integrity sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==
 
-zod@^3.24.0, zod@^4.1.12:
-  version "4.1.12"
-  resolved "https://registry.npmjs.org/zod/-/zod-4.1.12.tgz"
-  integrity sha512-JInaHOamG8pt5+Ey8kGmdcAcg3OL9reK8ltczgHTAwNhMys/6ThXHityHxVV2p3fkw/c+MAvBHFVYHFZDmjMCQ==
+zod@^3.24.0:
+  version "3.25.76"
+  resolved "https://registry.npmjs.org/zod/-/zod-3.25.76.tgz"
+  integrity sha512-gzUt/qt81nXsFGKIFcC3YnfEAx5NkunCfnDlvuBSSFS02bcXu4Lmea0AFIUwbLWxWPx3d9p8S5QoaujKcNQxcQ==

@@ -1,0 +1,1 @@
+declare module 'vuetify-money-3';

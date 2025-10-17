@@ -20,12 +20,22 @@ declare module 'vue-router/auto-routes' {
   export interface RouteNamedMap {
     '/': RouteRecordInfo<'/', '/', Record<never, never>, Record<never, never>>,
     '/categorias/': RouteRecordInfo<'/categorias/', '/categorias', Record<never, never>, Record<never, never>>,
+    '/categorias/edit/[id]': RouteRecordInfo<'/categorias/edit/[id]', '/categorias/edit/:id', { id: ParamValue<true> }, { id: ParamValue<false> }>,
+    '/categorias/new': RouteRecordInfo<'/categorias/new', '/categorias/new', Record<never, never>, Record<never, never>>,
+    '/estoques/': RouteRecordInfo<'/estoques/', '/estoques', Record<never, never>, Record<never, never>>,
+    '/estoques/new': RouteRecordInfo<'/estoques/new', '/estoques/new', Record<never, never>, Record<never, never>>,
     '/fornecedores/': RouteRecordInfo<'/fornecedores/', '/fornecedores', Record<never, never>, Record<never, never>>,
     '/fornecedores/fornecedoresEdit': RouteRecordInfo<'/fornecedores/fornecedoresEdit', '/fornecedores/fornecedoresEdit', Record<never, never>, Record<never, never>>,
     '/fornecedores/fornecedoresNew': RouteRecordInfo<'/fornecedores/fornecedoresNew', '/fornecedores/fornecedoresNew', Record<never, never>, Record<never, never>>,
     '/login': RouteRecordInfo<'/login', '/login', Record<never, never>, Record<never, never>>,
     '/marcas/': RouteRecordInfo<'/marcas/', '/marcas', Record<never, never>, Record<never, never>>,
-    '/produtos': RouteRecordInfo<'/produtos', '/produtos', Record<never, never>, Record<never, never>>,
+    '/marcas/edit/[id]': RouteRecordInfo<'/marcas/edit/[id]', '/marcas/edit/:id', { id: ParamValue<true> }, { id: ParamValue<false> }>,
+    '/marcas/new': RouteRecordInfo<'/marcas/new', '/marcas/new', Record<never, never>, Record<never, never>>,
+    '/ordens/': RouteRecordInfo<'/ordens/', '/ordens', Record<never, never>, Record<never, never>>,
+    '/ordens/new': RouteRecordInfo<'/ordens/new', '/ordens/new', Record<never, never>, Record<never, never>>,
+    '/produtos/': RouteRecordInfo<'/produtos/', '/produtos', Record<never, never>, Record<never, never>>,
+    '/produtos/edit/[id]': RouteRecordInfo<'/produtos/edit/[id]', '/produtos/edit/:id', { id: ParamValue<true> }, { id: ParamValue<false> }>,
+    '/produtos/new': RouteRecordInfo<'/produtos/new', '/produtos/new', Record<never, never>, Record<never, never>>,
   }
 
   /**
@@ -45,6 +55,22 @@ declare module 'vue-router/auto-routes' {
     }
     'src/pages/categorias/index.vue': {
       routes: '/categorias/'
+      views: never
+    }
+    'src/pages/categorias/edit/[id].vue': {
+      routes: '/categorias/edit/[id]'
+      views: never
+    }
+    'src/pages/categorias/new.vue': {
+      routes: '/categorias/new'
+      views: never
+    }
+    'src/pages/estoques/index.vue': {
+      routes: '/estoques/'
+      views: never
+    }
+    'src/pages/estoques/new.vue': {
+      routes: '/estoques/new'
       views: never
     }
     'src/pages/fornecedores/index.vue': {
@@ -67,8 +93,32 @@ declare module 'vue-router/auto-routes' {
       routes: '/marcas/'
       views: never
     }
-    'src/pages/produtos.vue': {
-      routes: '/produtos'
+    'src/pages/marcas/edit/[id].vue': {
+      routes: '/marcas/edit/[id]'
+      views: never
+    }
+    'src/pages/marcas/new.vue': {
+      routes: '/marcas/new'
+      views: never
+    }
+    'src/pages/ordens/index.vue': {
+      routes: '/ordens/'
+      views: never
+    }
+    'src/pages/ordens/new.vue': {
+      routes: '/ordens/new'
+      views: never
+    }
+    'src/pages/produtos/index.vue': {
+      routes: '/produtos/'
+      views: never
+    }
+    'src/pages/produtos/edit/[id].vue': {
+      routes: '/produtos/edit/[id]'
+      views: never
+    }
+    'src/pages/produtos/new.vue': {
+      routes: '/produtos/new'
       views: never
     }
   }

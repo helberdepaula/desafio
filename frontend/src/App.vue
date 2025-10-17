@@ -13,9 +13,9 @@
               :key="i" :value="item" color="primary" rounded="shaped">
             </v-list-item>
 
-            <v-list-group value="Users">
+            <v-list-group value="settings">
               <template v-slot:activator="{ props }">
-                <v-list-item v-bind="props" prepend-icon="mdi-cogs" title="Users" color="primary"
+                <v-list-item v-bind="props" prepend-icon="mdi-cogs" title="Configurações" color="primary"
                   rounded="shaped"></v-list-item>
               </template>
               <v-list-item v-for="(admin, i) in admins" :key="i" :prepend-icon="admin.icon" :title="admin.title"
@@ -81,10 +81,20 @@ const linksNav = [
     to: '/',
     icon: 'mdi-view-dashboard',
   },
+    {
+    title: 'Ordem',
+    to: '/ordens',
+    icon: 'mdi-cart-variant',
+  },
   {
     title: 'Produtos',
     to: '/produtos',
     icon: 'mdi-package-variant',
+  },
+   {
+    title: 'Estoques',
+    to: '/estoques',
+    icon: 'mdi-inbox-arrow-down',
   },
   {
     title: 'Fornecedores',
