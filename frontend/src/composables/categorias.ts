@@ -38,6 +38,19 @@ export function useCategoria() {
     errorCategoria.value = error.message;
   };
 
+  const findSelectCategoria = async (params?: SearchCategoriaDto) => {
+    try {
+      setLoading(true);
+      const response = await categoriaService.findSelect(params);
+      categorias.value = response;
+    } catch (err) {
+      handleError(err);
+      categorias.value = [];
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const find = async (id: number) => {
     try {
       setLoading(true);
@@ -146,6 +159,7 @@ export function useCategoria() {
     hasData,
     isEmpty,
     find,
+    findSelectCategoria,
     fecthCategoria,
     createCategoria,
     updateCategoria,
