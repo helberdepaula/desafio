@@ -12,13 +12,13 @@ const baseConfig = {
   database: process.env.DB_DATABASE || 'database',
   entities: [__dirname + '/../**/*.entity{.ts,.js}'],
   migrations: [__dirname + '/../database/migrations/*{.ts,.js}'],
-  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
+  ssl: process.env.NODE_ENV === 'production' ? false : false,
 };
 
 export const databaseConfig = registerAs('database', () => ({
   ...baseConfig,
   //synchronize: process.env.NODE_ENV === 'development',
- // logging: process.env.NODE_ENV === 'development',
+  // logging: process.env.NODE_ENV === 'development',
 }));
 
 export const AppDataSource = new DataSource({
