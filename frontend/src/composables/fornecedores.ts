@@ -41,6 +41,19 @@ export function useFornecedores() {
     errorForn.value = error.message;
   };
 
+  const findSelectFonecedor = async (params?: SearchFornecedorDto) => {
+    try {
+      setLoading(true);
+      const response = await fornecedorService.findSelect(params);
+      fornecedores.value = response;
+    } catch (err) {
+      handleError(err);
+      fornecedores.value = [];
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const find = async (id: number) => {
     try {
       setLoading(true);
@@ -161,7 +174,7 @@ export function useFornecedores() {
       });
 
       if (response.data) {
-      //  contatosFornecedo.value.unshift(response);
+        //  contatosFornecedo.value.unshift(response);
       }
       return response;
     } catch (err) {
@@ -193,6 +206,7 @@ export function useFornecedores() {
     hasData,
     isEmpty,
     find,
+    findSelectFonecedor,
     fetchFornecedores,
     createFornecedor,
     updateFornecedor,
