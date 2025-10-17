@@ -16,7 +16,7 @@
                     </v-col>
                 </v-row>
             </v-card-title>
-
+            <v-divider class="mb-5"></v-divider>
             <v-card-text>
                 <v-row class="mb-4">
                     <v-col cols="12" md="3">
@@ -162,7 +162,7 @@ const viewFornecedor = (id: number) => {
 }
 
 const editFornecedor = (id: number) => {
-   router.push('/fornecedores/edit/'+id)
+    router.push('/fornecedores/edit/' + id)
 }
 
 const confirmDelete = (fornecedor: Fornecedor) => {
