@@ -16,7 +16,7 @@
                     </v-col>
                 </v-row>
             </v-card-title>
-
+            <v-divider class="mb-5"></v-divider>
             <v-card-text>
                 <v-row class="mb-4">
                     <v-col cols="12" md="4">
@@ -74,7 +74,7 @@ import { format } from "date-fns";
 import useToastCustom from "@/composables/toastCustom";
 import { useRouter } from "vue-router";
 import { useMarcas } from "@/composables/marcas";
-import type { Marca } from "@/types/marcas.type";
+import type { Marca } from "@/types/marcas-type";
 const router = useRouter();
 const toast = new useToastCustom()
 
@@ -138,9 +138,6 @@ const fetchData = async () => {
 
 const formatDate = (date: string) => {
     return format(new Date(date), 'dd/MM/yyyy')
-}
-const formatCnpj = (cnpj: string) => {
-    return cnpj.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/, '$1.$2.$3/$4-$5')
 }
 
 const viewFornecedor = (id: number) => {
