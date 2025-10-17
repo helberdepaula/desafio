@@ -8,7 +8,7 @@ export class Pedidos1759772041104 implements MigrationInterface {
             (
                 id SERIAL NOT NULL,
                 user_id INTEGER NOT NULL,
-                valor_total numeric NOT NULL ,
+                valor_total numeric  NOT NULL CHECK (valor_total >= 0) ,
                 data_venda DATE,
                 created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
                 updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
