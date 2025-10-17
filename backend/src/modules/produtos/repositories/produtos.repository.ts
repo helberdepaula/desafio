@@ -1,8 +1,7 @@
-import { Raw, Repository } from 'typeorm';
+import { Not, Raw, Repository } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Produtos } from '../entities/produto.entity';
-import { CreateProdutoDto } from '../dto/create-produto.dto';
 import { ProdutoSearchDto } from '../dto/produtoSearch.dtos';
 
 @Injectable()
@@ -12,6 +11,29 @@ export class ProdutosRepository extends Repository<Produtos> {
     private readonly repository: Repository<Produtos>,
   ) {
     super(Produtos, repository.manager, repository.queryRunner);
+  }
+
+  async findAll(queryParams: ProdutoSearchDto) {
+    return this.repository.find({
+      select: { id: true, nome: true },
+    });
+  }
+
+  async findCodigo(codigo: string) {
+    return this.repository.findOne({
+      where: {
+        codigo: codigo,
+      },
+    });
+  }
+
+  async findCodigoIsNotId(id, codigo: string) {
+    return this.repository.findOne({
+      where: {
+        codigo: codigo,
+        id: Not(id),
+      },
+    });
   }
 
   async findByPK(id: number): Promise<Produtos | null> {
@@ -29,7 +51,9 @@ export class ProdutosRepository extends Repository<Produtos> {
   ): Promise<[Produtos[], number]> {
     const limit = Number(process.env.LIMIT_PAGINATION) || 0;
 
-    const whereParam: any = { /*status: 'ACTIVE'*/ };
+    const whereParam: any = {
+      /*status: 'ACTIVE'*/
+    };
 
     if (filter.nome) {
       whereParam.nome = Raw((alias) => `${alias} ILIKE '%${filter.nome}%'`);

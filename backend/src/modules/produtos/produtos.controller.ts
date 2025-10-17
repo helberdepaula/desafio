@@ -15,6 +15,7 @@ import { CreateProdutoDto } from './dto/create-produto.dto';
 import { UpdateProdutoDto } from './dto/update-produto.dto';
 import {
   ApiBearerAuth,
+  ApiConflictResponse,
   ApiForbiddenResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
@@ -25,7 +26,7 @@ import {
 } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { createPermissionsGuard } from '../auth/permissions.guard';
-import { createrProduto } from './swagger/produtos.swagger';
+import { createrProduto, getListJsonProduto } from './swagger/produtos.swagger';
 import { ProdutoSearchDto } from './dto/produtoSearch.dtos';
 
 @ApiTags('Produtos')
@@ -34,6 +35,19 @@ import { ProdutoSearchDto } from './dto/produtoSearch.dtos';
 @UseGuards(JwtAuthGuard)
 export class ProdutosController {
   constructor(private readonly produtosService: ProdutosService) {}
+
+  @Get('list-json')
+  @ApiOperation({ summary: 'Obtem uma lista de produto para uso em selects' })
+  @ApiResponse({
+    status: 200,
+    ...getListJsonProduto,
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Não autorizado',
+  })
+  listJSON(@Query() data: ProdutoSearchDto) {
+    return this.produtosService.findList(data);
+  }
 
   @Get()
   findAll(@Query() queryParams: ProdutoSearchDto) {
@@ -55,6 +69,9 @@ export class ProdutosController {
   })
   @ApiNotFoundResponse({
     description: 'Produto não encontrado ou foi removido da base de dados',
+  })
+  @ApiConflictResponse({
+    description: 'Já tem um produto com esse codigo cadastrado',
   })
   @ApiUnauthorizedResponse({ description: 'Não autorizado' })
   @ApiForbiddenResponse({

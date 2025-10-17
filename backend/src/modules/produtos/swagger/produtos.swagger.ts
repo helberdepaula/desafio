@@ -1,5 +1,26 @@
 import { ApiResponseOptions } from '@nestjs/swagger';
 
+export const getListJsonProduto: ApiResponseOptions = {
+  description: 'lista de produtos retornada com sucesso',
+  content: {
+    'application/json': {
+      example: {
+        data: [
+          {
+            id: 1,
+            nome: 'Arroz ',
+          },
+          {
+            id: 2,
+            nome: 'Beans',
+          },
+        ],
+      },
+    },
+  },
+};
+
+
 export const getlistProdutoResponse: ApiResponseOptions = {
   description: 'lista de produtos retornada com sucesso',
   content: {
