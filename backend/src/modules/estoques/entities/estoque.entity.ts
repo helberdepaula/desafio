@@ -34,10 +34,10 @@ export class Estoques {
   quantidade: number;
 
   @Column("numeric", { name: "preco_custo" })
-  precoCusto: string;
+  preco_custo: string;
 
   @Column("date", { name: "data_vencimento" })
-  dataVencimento: string;
+  data_vencimento: string;
 
   @Column("timestamp with time zone", {
     name: "created_at",

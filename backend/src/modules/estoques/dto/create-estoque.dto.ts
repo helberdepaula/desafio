@@ -53,8 +53,8 @@ export class CreateEstoqueDto {
     type: 'string',
   })
   @IsNotEmpty({ message: 'A quantidade é obrigatório.' })
-  @IsString({ message: 'A quantidade deve ser uma string' })
-  quantidade: string;
+  @IsNumber({},{ message: 'A quantidade deve ser um valor numérico' })
+  quantidade: number;
 
   @ApiProperty({
     description: 'Preço de custo  do produto',
