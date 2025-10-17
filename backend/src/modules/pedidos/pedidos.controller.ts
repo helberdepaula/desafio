@@ -14,6 +14,7 @@ import { CreatePedidoDto } from './dto/create-pedido.dto';
 import { UpdatePedidoDto } from './dto/update-pedido.dto';
 import { PedidoSearchDto } from './dto/pedido.search.dto';
 import {
+  ApiBearerAuth,
   ApiConflictResponse,
   ApiForbiddenResponse,
   ApiNotFoundResponse,
@@ -21,12 +22,17 @@ import {
   ApiOperation,
   ApiParam,
   ApiResponse,
+  ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { createPermissionsGuard } from '../auth/permissions.guard';
 import { getlistPedidoResponse } from './swagger/pedidos.swagger';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
+@ApiTags('Pedidos')
+@ApiBearerAuth('JWT-auth')
 @Controller('pedidos')
+@UseGuards(JwtAuthGuard)
 export class PedidosController {
   constructor(private readonly pedidosService: PedidosService) {}
 
