@@ -10,13 +10,13 @@
                         </div>
                     </v-col>
                     <v-col cols="auto">
-                        <v-btn href="/categoria/new" color="primary" prepend-icon="mdi-plus-circle-outline">
+                        <v-btn href="/categorias/new" color="primary" prepend-icon="mdi-plus-circle-outline">
                             Novo Categoria
                         </v-btn>
                     </v-col>
                 </v-row>
             </v-card-title>
-
+            <v-divider class="mb-5"></v-divider>
             <v-card-text>
                 <v-row class="mb-4">
                     <v-col cols="12" md="4">
@@ -39,7 +39,6 @@
                         <v-btn icon="mdi-delete" size="small" variant="text" color="error"
                             @click="confirmDelete(item)" />
                     </template>
-
                     <template #no-data>
                         <div class="text-center py-4">
                             <v-icon size="64" color="grey">mdi-umbrella-beach</v-icon>
@@ -139,16 +138,13 @@ const fetchData = async () => {
 const formatDate = (date: string) => {
     return format(new Date(date), 'dd/MM/yyyy')
 }
-const formatCnpj = (cnpj: string) => {
-    return cnpj.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/, '$1.$2.$3/$4-$5')
-}
 
 const viewFornecedor = (id: number) => {
     console.log('Visualizar fornecedor:', id)
 }
 
 const editFornecedor = (id: number) => {
-    router.push('/categoria/edit/' + id)
+    router.push('/categorias/edit/' + id)
 }
 
 const confirmDelete = (fornecedor: Categorias) => {

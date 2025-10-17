@@ -27,9 +27,7 @@ export interface CreateCategoriaDto {
   nome: string;
 }
 
-export interface UpdateCategoriaDto {
-  nome: string;
-}
+export interface UpdateCategoriaDto extends Partial<CreateCategoriaDto> {}
 
 export interface CategoriaResponse {
   message: string;
