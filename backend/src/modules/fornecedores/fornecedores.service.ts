@@ -25,6 +25,10 @@ export class FornecedoresService {
     private readonly contatoRepository: ContatosRepository,
   ) {}
 
+  findList(data:SearchFornecedoreDto) {
+    return this.fornecedoreRespository.findAll(data);
+  }
+
   async findAll(queryParams: SearchFornecedoreDto) {
     const limit = Number(process.env.LIMIT_PAGINATION) || 0;
     const [result, total] =

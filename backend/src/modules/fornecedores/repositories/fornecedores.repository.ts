@@ -57,8 +57,8 @@ export class FornecedoresRepository extends Repository<Fornecedores> {
     });
   }
 
+
   async findAll(filter: SearchFornecedoreDto): Promise<Fornecedores[]> {
-    const limit = Number(process.env.LIMIT_PAGINATION) || 0;
 
     const whereParam: any = { status: 'ACTIVE' };
     if (filter.cnpj) {
@@ -72,6 +72,7 @@ export class FornecedoresRepository extends Repository<Fornecedores> {
       where: whereParam,
     });
   }
+
 
   async createNew(data: CreateFornecedoreDto): Promise<Fornecedores | null> {
     return this.repository.save({
