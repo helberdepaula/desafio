@@ -58,11 +58,7 @@
                 <template #item.updatedAt="{ item }">
                     {{ formatDate(item.updatedAt) }}
                 </template>
-                <template #item.actions="{ item }">
-                    <v-btn icon="mdi-eye" size="small" variant="text" @click="view(item.id)" />
-                    <v-btn icon="mdi-pencil" size="small" variant="text" @click="edit(item.id)" />
-                    <v-btn icon="mdi-delete" size="small" variant="text" color="error" @click="confirm(item)" />
-                </template>
+ 
 
                 <template #no-data>
                     <div class="text-center py-4">
@@ -127,7 +123,6 @@ const headers = ref([
     { title: "Quantidade", key: "quantidade", align: "end" },
     { title: "Criado em", key: "createdAt", align: "start", sortable: false },
     { title: "Atualizado em", key: "updatedAt", align: "start", sortable: false },
-    { title: "Ações", key: "actions", align: "center", sortable: false },
 ] as const)
 
 let searchTimeout: ReturnType<typeof setTimeout>
