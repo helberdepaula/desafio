@@ -15,8 +15,8 @@ export class PedidosRepository extends Repository<Pedidos> {
 
   async findByPK(id: number): Promise<Pedidos | null> {
     return this.repository.findOne({
-      relations: ['endereco'],
-      where: { id,  },
+      relations: ['pedidoItens', 'pedidoItens.estoque', 'pedidoItens.produto'],
+      where: { id },
     });
   }
 
@@ -24,15 +24,16 @@ export class PedidosRepository extends Repository<Pedidos> {
     filter: PedidoSearchDto,
   ): Promise<[Pedidos[], number]> {
     const limit = Number(process.env.LIMIT_PAGINATION) || 0;
-    const whereParam: any = { status: 'ACTIVE' };
-
+    const whereParam: any = {};
 
     const offset =
       (Number(filter?.page) - 1 || 1 - 1) * Number(filter.limit || limit);
     return await this.repository.findAndCount({
+      relations: ['pedidoItens'],
       where: whereParam,
       take: filter.limit || limit,
       skip: offset ?? 0,
+      order:{id:'DESC'}
     });
   }
 }

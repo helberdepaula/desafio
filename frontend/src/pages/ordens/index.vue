@@ -25,19 +25,22 @@
                     </v-col>
                 </v-row>
 
-                <v-data-table-server v-model:items-per-page="itemsPerPage" :headers="headers" :items="marcas"
+                <v-data-table-server v-model:items-per-page="itemsPerPage" :headers="headers" :items="ordens"
                     :items-length="totalItems" :loading="loading" item-value="id" @update:options="loadItems">
+                    <template #item.id="{ item }">
+                        {{ item.id.toString().padStart(6, '0') }}
+                    </template>
+                    <template #item.valor_total="{ item }">
+                        {{ formatCurrency(Number(item.valor_total)) }}
+                    </template>
+                    <template #item.data_venda="{ item }">
+                        {{ formatDate(item.data_venda) }}
+                    </template>
                     <template #item.createdAt="{ item }">
-                        {{ formatDate(item.createdAt) }}
+                        {{ formatDate(item.created_at) }}
                     </template>
                     <template #item.updatedAt="{ item }">
-                        {{ formatDate(item.updatedAt) }}
-                    </template>
-                    <template #item.actions="{ item }">
-                        <v-btn icon="mdi-eye" size="small" variant="text" @click="viewFornecedor(item.id)" />
-                        <v-btn icon="mdi-pencil" size="small" variant="text" @click="editFornecedor(item.id)" />
-                        <v-btn icon="mdi-delete" size="small" variant="text" color="error"
-                            @click="confirmDelete(item)" />
+                        {{ formatDate(item.created_at) }}
                     </template>
 
                     <template #no-data>
@@ -55,13 +58,13 @@
             <v-card>
                 <v-card-title>Confirmar Exclusão</v-card-title>
                 <v-card-text>
-                    Tem certeza que deseja excluir o marca <strong>{{ serlectMarca?.nome }}</strong>?
+                    Tem certeza que deseja excluir o marca ?
                     Esta ação não pode ser desfeita.
                 </v-card-text>
                 <v-card-actions>
                     <v-spacer />
                     <v-btn @click="deleteDialog = false">Cancelar</v-btn>
-                    <v-btn color="error" @click="deleteFornecedor">Excluir</v-btn>
+                    <v-btn color="error" @click="deleteOrdem">Excluir</v-btn>
                 </v-card-actions>
             </v-card>
         </v-dialog>
@@ -73,8 +76,8 @@ import { ref, onMounted, watch } from "vue"
 import { format } from "date-fns";
 import useToastCustom from "@/composables/toastCustom";
 import { useRouter } from "vue-router";
-import { useMarcas } from "@/composables/marcas";
-import type { Marca } from "@/types/marcas-type";
+import { useOrdem } from "@/composables/ordem";
+import type { Ordem } from "@/types/ordem-type";
 const router = useRouter();
 const toast = new useToastCustom()
 
@@ -83,35 +86,29 @@ const breadcrumps = [
 ]
 
 const {
-    marcas,
+    ordens,
     loading,
-    errorMarca,
+    errorOrdem,
     totalItems,
     currentPage,
     itemsPerPage,
-    fetchMarca,
-    removerMarca
-} = useMarcas()
+    fetchOrdem,
+} = useOrdem()
 
 // Estado local
 const search = ref("")
-const cnpj = ref("")
-const cnpjMask = {
-    mask: '##.###.###/####-##',
-    tokens: {
-        '#': { pattern: /[0-9]/ }
-    }
-};
-
 const deleteDialog = ref(false)
-const serlectMarca = ref<Marca | null>(null)
+const selectOrdem = ref<Ordem | null>(null)
 
 // Headers da tabela
 const headers = ref([
-    { title: "Nome", key: "nome", align: "start" },
+    { title: "Codigo", key: "id", align: "start" },
+    { title: "Data da Venda", key: "data_venda", align: "start" },
+    { title: "Quantidade Item", key: "quantide_itens", align: "end" },
+    { title: "Valor total", key: "valor_total", align: "end" },
     { title: "Criado em", key: "createdAt", align: "start", sortable: false },
     { title: "Atualizado em", key: "updatedAt", align: "start", sortable: false },
-    { title: "Ações", key: "actions", align: "center", sortable: false },
+    //{ title: "Ações", key: "actions", align: "center", sortable: false },
 ] as const)
 
 let searchTimeout: ReturnType<typeof setTimeout>
@@ -129,11 +126,19 @@ const loadItems = ({ page, itemsPerPage: perPage }: { page: number, itemsPerPage
 }
 
 const fetchData = async () => {
-    await fetchMarca({
+    await fetchOrdem({
         page: currentPage.value,
         limit: itemsPerPage.value,
         nome: search.value || undefined,
     })
+}
+
+const formatCurrency = (valor: number) => {
+    const formatador = new Intl.NumberFormat('pt-BR', {
+        style: 'currency',
+        currency: 'BRL',
+    });
+    return formatador.format(valor);
 }
 
 const formatDate = (date: string) => {
@@ -148,24 +153,24 @@ const editFornecedor = (id: number) => {
     router.push('/marcas/edit/' + id)
 }
 
-const confirmDelete = (fornecedor: Marca) => {
-    serlectMarca.value = fornecedor
+const confirmDelete = (fornecedor: Ordem) => {
+    selectOrdem.value = fornecedor
     deleteDialog.value = true
 }
 
-const deleteFornecedor = async () => {
-    if (!serlectMarca.value) return
+const deleteOrdem = async () => {
+    if (!selectOrdem.value) return
 
     try {
-        await removerMarca(serlectMarca.value.id)
+        // await removerMarca(selectOrdem.value.id)
         deleteDialog.value = false
-        serlectMarca.value = null
+        selectOrdem.value = null
     } catch (error) {
         console.error('Erro ao excluir fornecedor:', error)
     }
 }
 
-watch(errorMarca, (newError) => {
+watch(errorOrdem, (newError) => {
     if (newError) {
         toast.error(newError);
     }

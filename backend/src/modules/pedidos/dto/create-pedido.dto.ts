@@ -14,14 +14,6 @@ export class Itens {
     description: 'Código do Produto',
     type: 'number',
   })
-  @IsNotEmpty({ message: 'O campo produto é obrigatório.' })
-  @IsNumber({}, { message: 'O codigo do produto dever ser um valor numérico' })
-  produto_id: number;
-
-  @ApiProperty({
-    description: 'Código do Produto',
-    type: 'number',
-  })
   @IsNumber({}, { message: 'O estoque dever ser um valor numérico' })
   estoque_id: number;
 
@@ -43,7 +35,10 @@ export class CreatePedidoDto {
   })
   @IsArray()
   @ValidateNested({ each: true })
-  @ArrayMinSize(1)
+  @ArrayMinSize(1, {
+    message:
+      'Para criar a ordem, é necessário conter pelo menos 1 item para fechar o pedido.',
+  })
   @ArrayMaxSize(100)
   @Type(() => Itens)
   itens: Itens[];
