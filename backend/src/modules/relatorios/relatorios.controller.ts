@@ -30,7 +30,7 @@ import { EstoqueValorBrutoRelatorioDto } from './dto/estoque.valorbruto.relatori
 import { EstoqueCriticoRelatorioDto } from './dto/estoque.critico.relatorio.dtos';
 import { EstoqueEntradaRelatorioDto } from './dto/estoque.entrada.relatorio.dtos';
 
-@ApiTags('Regiões')
+@ApiTags('Relatórios')
 @ApiBearerAuth('JWT-auth')
 @Controller('relatorios')
 @UseGuards(JwtAuthGuard)
