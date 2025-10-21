@@ -3,7 +3,9 @@ import { MigrationInterface, QueryRunner } from 'typeorm';
 export class PedidoStatus1759771685481 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
-      `CREATE TYPE TypeStatusPedido AS ENUM ('ACTIVE', 'CANCELED')`,
+      `
+      DROP TYPE IF EXISTS TypeStatusPedido;
+      CREATE TYPE  TypeStatusPedido AS ENUM ('ACTIVE', 'CANCELED')`,
     );
   }
 
