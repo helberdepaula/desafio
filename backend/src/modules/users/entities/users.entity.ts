@@ -13,6 +13,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { ContatoUser } from './contato-user.entity';
+import { Pedidos } from '@app/modules/pedidos/entities/pedido.entity';
 
 export enum TypeRules {
   ADMIN = 'ADMIN',
@@ -87,8 +88,8 @@ export class Users {
   @OneToMany(() => Estoques, (estoques) => estoques.user)
   estoques: Estoques[];
 
-  @OneToMany(() => PedidoItens, (pedidoItens) => pedidoItens.user)
-  pedidoItens: PedidoItens[];
+  @OneToMany(() => Pedidos, (pedidos) => pedidos.user)
+  pedidos: Pedidos[];
 
   @OneToMany(() => Produtos, (produtos) => produtos.user)
   produtos: Produtos[];

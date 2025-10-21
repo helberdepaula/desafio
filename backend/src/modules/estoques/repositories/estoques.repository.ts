@@ -95,7 +95,6 @@ export class EstoquesRepository extends Repository<Estoques> {
     if (restoque.quantidade < quantidade) {
       return;
     }
-console.log(restoque.quantidade - quantidade )
     return this.repository.update(id, {
       quantidade:
         restoque.quantidade - quantidade > 0
