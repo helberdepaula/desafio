@@ -120,7 +120,7 @@ export class PedidosService {
           produto: { id: item.produto.id },
           estoque: { id: item.id },
           quantidade: item.quantidade,
-          preco: item.preco_custo,
+          preco: item.preco_venda,
         };
       }),
     );

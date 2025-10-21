@@ -41,6 +41,10 @@ export const schemaValidade = {
     if (value) return true;
     return "Campo preco de custom é obrigatório";
   },
+  preco_venda(value: string) {
+    if (value) return true;
+    return "Campo preco de venda é obrigatório";
+  },
   secao(value: string) {
     if (value) return true;
     return "Campo seção é obrigatório";

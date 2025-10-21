@@ -35,6 +35,9 @@ export class Estoques {
 
   @Column("numeric", { name: "preco_custo" })
   preco_custo: string;
+  
+  @Column("numeric", { name: "preco_venda" })
+  preco_venda: string;
 
   @Column("date", { name: "data_vencimento" })
   data_vencimento: string;

@@ -45,8 +45,12 @@
                             label="Quantidade"></v-number-input>
                     </v-col>
                     <v-col cols="2">
-                        <vuetify-money v-model="preco_custo.value.value" label="Preço de custom" :options="config"
+                        <vuetify-money v-model="preco_custo.value.value" label="Preço de custom(unidade)" :options="config"
                             :error-messages="preco_custo.errorMessage.value" bg-color="grey-darken-3" />
+                    </v-col>
+                    <v-col cols="2">
+                        <vuetify-money v-model="preco_venda.value.value" label="Preço de venda (unidade)" :options="config"
+                            :error-messages="preco_venda.errorMessage.value" bg-color="grey-darken-3" />
                     </v-col>
                 </v-row>
                 <v-row align="center">
@@ -135,6 +139,7 @@ const sku = useField('sku');
 const secao = useField('secao');
 const quantidade = useField('quantidade','required|numeric');
 const preco_custo = useField('preco_custo');
+const preco_venda = useField('preco_venda');
 const data_vencimento = useField('data_vencimento');
 
 

@@ -91,6 +91,7 @@ export interface CreateEstoqueDto {
   sku: string;
   quantidade: string;
   preco_custo: string;
+  preco_venda: string;
   data_vencimento: string;
 }
 
