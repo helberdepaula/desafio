@@ -14,6 +14,7 @@ import {
 } from 'typeorm';
 import { ContatoUser } from './contato-user.entity';
 import { Pedidos } from '@app/modules/pedidos/entities/pedido.entity';
+import { Relatorios } from '@app/modules/relatorios/entities/Relatorios.entity';
 
 export enum TypeRules {
   ADMIN = 'ADMIN',
@@ -97,4 +98,7 @@ export class Users {
   @ManyToOne(() => Enderecos, (enderecos) => enderecos.users)
   @JoinColumn([{ name: 'endereco_id', referencedColumnName: 'id' }])
   endereco: Enderecos;
+
+  @OneToMany(() => Relatorios, (relatorios) => relatorios.user)
+  relatorios: Relatorios[];
 }

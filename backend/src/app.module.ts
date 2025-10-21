@@ -4,6 +4,7 @@ import { AppService } from './app.service';
 import { UsersModule } from './modules/users/users.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { BullModule } from '@nestjs/bull';
 import { DataSource } from 'typeorm';
 import { databaseConfig } from './config/datasource';
 import { ConfigModule, ConfigService } from '@nestjs/config';
@@ -18,12 +19,25 @@ import { FornecedoresModule } from './modules/fornecedores/fornecedores.module';
 import { ProdutosModule } from './modules/produtos/produtos.module';
 import { PedidosModule } from './modules/pedidos/pedidos.module';
 import { EstoquesModule } from './modules/estoques/estoques.module';
+import { RelatoriosModule } from './modules/relatorios/relatorios.module';
+import { RelatorioQueueModule } from './modules/relatorio-queue/relatorio-queue.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
       load: [databaseConfig],
+    }),
+    BullModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: async (configService: ConfigService) => ({
+        redis: {
+          host: configService.get('REDIS_HOST'),
+          port: Number(configService.get('REDIS_PORT')),
+          password: configService.get('REDIS_PASSWORD'),
+        },
+      }),
     }),
     TypeOrmModule.forRootAsync({
       useFactory: (configService: ConfigService) =>
@@ -48,6 +62,8 @@ import { EstoquesModule } from './modules/estoques/estoques.module';
     ProdutosModule,
     PedidosModule,
     EstoquesModule,
+    RelatoriosModule,
+    RelatorioQueueModule,
   ],
   controllers: [AppController],
   providers: [AppService],
