@@ -6,16 +6,54 @@
                     Add novo contato
                 </v-btn>
             </v-col>
+            <v-col cols="3">
+                <v-btn type="submit" color="primary" :loading="loading" :disabled="!hasValidContatos">
+                    Salvar contatos
+                </v-btn>
+            </v-col>
         </v-row>
 
         <div v-for="field in formFields" :key="field.id" class="form-field-group">
             <v-row>
-                <v-col cols="3">
-                    <v-mask-input :model="field.id" :mask="phoneNumberMask" label="+55 (00) 0 0000-0000"></v-mask-input>
+                <v-col cols="2">
+                    <v-text-field
+                        v-model="field.codigo"
+                        label="Código"
+                        :rules="[rules.required]"
+                        variant="outlined"
+                        density="compact"
+                    ></v-text-field>
                 </v-col>
-                <v-col class="">
-                    <v-btn type="button" @click="removeField(field.id)" class="mt-5" color="gost">
-                        <v-icon color="#ff4d86" icon="mdi-trash-can-outline"></v-icon>
+                <v-col cols="2">
+                    <v-text-field
+                        v-model="field.ddd"
+                        label="DDD"
+                        :rules="[rules.required, rules.ddd]"
+                        variant="outlined"
+                        density="compact"
+                        maxlength="2"
+                    ></v-text-field>
+                </v-col>
+                <v-col cols="3">
+                    <v-text-field
+                        v-model="field.numero"
+                        label="Número"
+                        :rules="[rules.required, rules.telefone]"
+                        variant="outlined"
+                        density="compact"
+                    ></v-text-field>
+                </v-col>
+                <v-col cols="1">
+                    <v-btn 
+                        type="button" 
+                        @click="removeField(field.id)" 
+                        class="mt-1" 
+                        color="error"
+                        icon
+                        size="small"
+                        :disabled="formFields.length === 1"
+                    >
+                        <v-icon icon="mdi-trash-can-outline"></v-icon>
                     </v-btn>
                 </v-col>
             </v-row>
@@ -27,65 +65,151 @@
 <script lang="ts" setup>
 import { useFornecedores } from '@/composables/fornecedores';
 import useToastCustom from '@/composables/toastCustom';
-import type { FormField } from '@/types/add-input-type';
 import type { CreateContatoDto } from '@/types/fornecedores-type';
-import { useForm } from 'vee-validate';
-import { onMounted, ref, watch } from 'vue';
-import { useRoute } from 'vue-router';
-const route = useRoute();
-const toast = new useToastCustom();
-const { id } = route.params as { id: string };
-const { createContatoFornecedor, contatosFornecedo, getContatoFornecedor } = useFornecedores()
+import { computed, onMounted, ref, watch } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 
-
-const phoneNumberMask = {
-    mask: '+55 (##) # ####-####',
-    tokens: {
-        '#': { pattern: /[0-9]/ }
-    }
+interface ContatoFormField {
+    id: number;
+    codigo: string;
+    ddd: string;
+    numero: string;
+    isExisting?: boolean;
+    existingId?: number;
 }
 
-const formFields = ref<FormField[]>([
-    { id: 1, value: '' }
+const route = useRoute();
+const router = useRouter();
+const toast = new useToastCustom();
+const { id } = route.params as { id: string };
+const { createContatoFornecedor, contatosFornecedo, getContatoFornecedor, loading } = useFornecedores()
+
+const formFields = ref<ContatoFormField[]>([
+    { id: 1, codigo: '', ddd: '', numero: '' }
 ]);
 
+const rules = {
+    required: (value: string) => !!value || 'Campo obrigatório',
+    ddd: (value: string) => {
+        if (!value) return 'DDD é obrigatório';
+        if (value.length !== 2) return 'DDD deve ter 2 dígitos';
+        return true;
+    },
+    telefone: (value: string) => {
+        if (!value) return 'Número é obrigatório';
+        if (value.length < 8 || value.length > 9) return 'Número deve ter entre 8 e 9 dígitos';
+        return true;
+    }
+};
+
 let nextId = 2;
+
 const addField = () => {
     formFields.value.push({
         id: nextId++,
-        value: ''
+        codigo: '',
+        ddd: '',
+        numero: ''
     });
 };
 
 const removeField = (idToRemove: number) => {
-    formFields.value = formFields.value.filter(field => field.id !== idToRemove);
+    if (formFields.value.length > 1) {
+        formFields.value = formFields.value.filter(field => field.id !== idToRemove);
+    }
 };
 
-const handleSubmit = () => {
-    console.log('Form Data:', formFields.value);
+const hasValidContatos = computed(() => {
+    return formFields.value.some(field => 
+        field.codigo.trim() !== '' && 
+        field.ddd.trim() !== '' && 
+        field.numero.trim() !== ''
+    );
+});
+
+const validateForm = () => {
+    for (const field of formFields.value) {
+        if (field.codigo || field.ddd || field.numero) {
+            if (!field.codigo || !field.ddd || !field.numero) {
+                toast.error('Todos os campos do contato devem ser preenchidos');
+                return false;
+            }
+            if (field.ddd.length !== 2) {
+                toast.error('DDD deve ter exatamente 2 dígitos');
+                return false;
+            }
+            if (field.numero.length < 8 || field.numero.length > 9) {
+                toast.error('Número deve ter entre 8 e 9 dígitos');
+                return false;
+            }
+        }
+    }
+    return true;
+};
+
+const handleSubmit = async () => {
+    if (!validateForm()) return;
+
+    const validContatos = formFields.value.filter(field => 
+        field.codigo.trim() && field.ddd.trim() && field.numero.trim()
+    );
+
+    if (validContatos.length === 0) {
+        toast.error('Adicione pelo menos um contato válido');
+        return;
+    }
+
+    const contatosData: CreateContatoDto[] = validContatos.map(field => ({
+        codigo: field.codigo.trim(),
+        ddd: field.ddd.trim(),
+        numero: field.numero.trim()
+    }));
+
+    try {
+        await createContatoFornecedor(Number(id), contatosData);
+        toast.success('Contatos salvos com sucesso!');
+        await getContatoFornecedor(Number(id));
+    } catch (error) {
+        toast.error('Erro ao salvar contatos');
+        console.error('Erro:', error);
+    }
+};
+
+const loadExistingContatos = () => {
+    if (contatosFornecedo.value && contatosFornecedo.value.length > 0) {
+        formFields.value = contatosFornecedo.value.map((contato, index) => ({
+            id: index + 1,
+            codigo: contato.codigo,
+            ddd: contato.ddd,
+            numero: contato.numero,
+            isExisting: true,
+            existingId: contato.id
+        }));
+        nextId = contatosFornecedo.value.length + 1;
+    }
 };
 
 watch(contatosFornecedo, (data) => {
-  /*  data.map(item => {
-        formFields.value.unshift({
-            id: nextId++,
-            value: `${item.codigo} (${item.ddd}) ${item.codigo} `
-        });
-    })*/
-})
+    if (data && data.length > 0) {
+        loadExistingContatos();
+    }
+}, { deep: true });
 
-onMounted(() => {
-    getContatoFornecedor(Number(id))
-})
+onMounted(async () => {
+    await getContatoFornecedor(Number(id));
+});
 </script>
 
 
 <style scoped>
 .form-field-group {
-    margin-bottom: 10px;
+    margin-bottom: 16px;
+    padding: 12px;
+    border-radius: 8px;
+    background-color: #f9f9f9;
 }
 
-input {
-    margin-right: 5px;
+.form-field-group:hover {
+    background-color: #f5f5f5;
 }
 </style>
