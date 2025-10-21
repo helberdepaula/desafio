@@ -77,6 +77,13 @@ export class EstoquesService {
       throw new ConflictException(['Esté lote já foi cadastrdo no estoque']);
     }
 
+    if (
+      Number(createEstoqueDto.preco_venda) <=
+      Number(createEstoqueDto.preco_custo)
+    ) {
+      throw new ConflictException(['O valor da venda tem que ser maior que o valor da compra']);
+    }
+
     const result = await this.estoqueRepository.save({
       corredor: createEstoqueDto.corredor,
       prateleira: createEstoqueDto.prateleira,
@@ -84,6 +91,7 @@ export class EstoquesService {
       quantidade: Number(createEstoqueDto.quantidade),
       sku: createEstoqueDto.sku,
       preco_custo: createEstoqueDto.preco_custo,
+      preco_venda: createEstoqueDto.preco_venda,
       data_vencimento: new Date(dataFormatting).toISOString(),
       user: {
         id: createEstoqueDto.user_id,
