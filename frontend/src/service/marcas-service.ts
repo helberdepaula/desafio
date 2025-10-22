@@ -5,12 +5,16 @@ import type {
   MarcasResult,
   SearchMarcaDto,
   UpdateMarcaDto,
-} from "@/types/marcas.type";
+} from "@/types/marcas-type";
 import { apiService } from "./requet-service";
 
 class MarcasService {
   async findAll(params?: SearchMarcaDto): Promise<MarcasResult> {
     return apiService.get<MarcasResult>("/marcas", { params });
+  }
+
+  async findSelect(params?: SearchMarcaDto): Promise<Marca[]> {
+    return apiService.get<Marca[]>(`/marcas/list-json`, { params });
   }
 
   async findId(id: number): Promise<Marca> {

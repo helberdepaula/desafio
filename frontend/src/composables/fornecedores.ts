@@ -41,6 +41,19 @@ export function useFornecedores() {
     errorForn.value = error.message;
   };
 
+  const findSelectFonecedor = async (params?: SearchFornecedorDto) => {
+    try {
+      setLoading(true);
+      const response = await fornecedorService.findSelect(params);
+      fornecedores.value = response;
+    } catch (err) {
+      handleError(err);
+      fornecedores.value = [];
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const find = async (id: number) => {
     try {
       setLoading(true);
@@ -159,9 +172,22 @@ export function useFornecedores() {
       const response = await fornecedorService.createContato(fornecedor_id, {
         contatos: data,
       });
+      return response;
+    } catch (err) {
+      handleError(err);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const removerContato = async (contato_id: number) => {
+    try {
+      setLoading(true);
+      const response = await fornecedorService.deleteContato(contato_id);
 
       if (response.data) {
-      //  contatosFornecedo.value.unshift(response);
+        //  contatosFornecedo.value.unshift(response);
       }
       return response;
     } catch (err) {
@@ -193,10 +219,12 @@ export function useFornecedores() {
     hasData,
     isEmpty,
     find,
+    findSelectFonecedor,
     fetchFornecedores,
     createFornecedor,
     updateFornecedor,
     removeFornecedor,
+    removerContato,
     getContatoFornecedor,
     createContatoFornecedor,
     clearData,

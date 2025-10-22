@@ -11,6 +11,7 @@ declare module 'vue' {
     Authentication: typeof import('./components/Authentication.vue')['default']
     Cadastro: typeof import('./components/fornecedores/Cadastro.vue')['default']
     Contato: typeof import('./components/fornecedores/Contato.vue')['default']
+    CurrencyInput: typeof import('./components/CurrencyInput.vue')['default']
     Edicao: typeof import('./components/fornecedores/Edicao.vue')['default']
     'ErrorToast ': typeof import('./components/Toast/ErrorToast .vue')['default']
     HelloWorld: typeof import('./components/HelloWorld.vue')['default']

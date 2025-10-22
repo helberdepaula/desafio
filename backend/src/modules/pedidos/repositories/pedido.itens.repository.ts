@@ -11,4 +11,11 @@ export class PedidoItensRepository extends Repository<PedidoItens> {
   ) {
     super(PedidoItens, repository.manager, repository.queryRunner);
   }
+
+  async findByPK(id: number): Promise<PedidoItens | null> {
+    return this.repository.findOne({
+      relations: ['estoque','pedido'],
+      where: { id },
+    });
+  }
 }

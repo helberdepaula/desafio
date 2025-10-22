@@ -9,9 +9,14 @@
                             <v-breadcrumbs :items="breadcrumps"></v-breadcrumbs>
                         </div>
                     </v-col>
+                    <v-col cols="auto">
+                        <v-btn href="/fornecedores" color="primary" prepend-icon="mdi-arrow-left-top-bold">
+                            Voltar
+                        </v-btn>
+                    </v-col>
                 </v-row>
             </v-card-title>
-
+            <v-divider class="mb-5"></v-divider>
             <v-card-text>
                 <v-tabs v-model="tab" bg-color="gost">
                     <v-tab value="one">Dados</v-tab>

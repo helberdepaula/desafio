@@ -7,19 +7,14 @@ export class PedidoItens1759772636072 implements MigrationInterface {
             CREATE TABLE IF NOT EXISTS public.pedido_itens
             (
                 id SERIAL NOT NULL,
-                user_id INTEGER NOT NULL,
                 pedido_id INTEGER NOT NULL,
                 produto_id INTEGER NOT NULL,
                 estoque_id INTEGER NOT NULL,
                 quantidade INTEGER NOT NULL,
-                preco numeric NOT NULL CHECK (preco > 0),
+                preco numeric NOT NULL CHECK (preco >= 0),
+                status TypeStatusPedido NOT NULL DEFAULT 'ACTIVE',
                 created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
                 updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
-                CONSTRAINT pedido_item_to_users_fk FOREIGN KEY(user_id)
-                REFERENCES public.users (id) match simple
-                    ON UPDATE NO ACTION
-                    ON DELETE NO ACTION
-                    NOT VALID,
                 CONSTRAINT pedido_itens_to_pedidos_fk FOREIGN KEY(pedido_id)
                 REFERENCES public.pedidos (id) match simple
                     ON UPDATE NO ACTION

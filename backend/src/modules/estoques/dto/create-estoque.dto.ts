@@ -53,16 +53,25 @@ export class CreateEstoqueDto {
     type: 'string',
   })
   @IsNotEmpty({ message: 'A quantidade é obrigatório.' })
-  @IsString({ message: 'A quantidade deve ser uma string' })
-  quantidade: string;
+  @IsNumber({},{ message: 'A quantidade deve ser um valor numérico' })
+  quantidade: number;
 
   @ApiProperty({
     description: 'Preço de custo  do produto',
     type: 'string',
   })
+  
   @IsNotEmpty({ message: 'O campo preço de custo é obrigatório.' })
   @IsString({ message: 'O campo preço de custo uma string' })
   preco_custo: string;
+  @ApiProperty({
+    description: 'Preço de venda  do produto',
+    type: 'string',
+  })
+
+  @IsNotEmpty({ message: 'O campo preço de venda é obrigatório.' })
+  @IsString({ message: 'O campo preço de venda uma string' })
+  preco_venda: string;
 
   @ApiProperty({
     description: 'Data do vencimento do produto',

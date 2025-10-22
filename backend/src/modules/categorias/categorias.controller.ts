@@ -12,6 +12,7 @@ import {
 import { CategoriasService } from './categorias.service';
 import {
   ApiBearerAuth,
+  ApiNotFoundResponse,
   ApiOperation,
   ApiResponse,
   ApiTags,
@@ -59,6 +60,22 @@ export class CategoriasController {
   })
   findAll(@Query() queryParams: CategoriaSearchDto) {
     return this.categoriasService.findAll(queryParams);
+  }
+
+  @Get(':id')
+  @ApiOperation({ summary: 'Obtem uma lista de categorias' })
+  @ApiResponse({
+    status: 200,
+    ...{ id: 1, nome: 'Latícinios' },
+  })
+  @ApiNotFoundResponse({
+    description: 'A categoria não existe ou foi removido da base de dados',
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Não autorizado',
+  })
+  find(@Param('id') id: string) {
+    return this.categoriasService.find(+id);
   }
 
   @Post()

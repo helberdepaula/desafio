@@ -72,8 +72,7 @@ export class MarcasRepository extends Repository<Marcas> {
   }
 
   async updateCustom(id: number, data: UpdateMarcaDto): Promise<any> {
-    return this.repository.save({
-      id: id,
+    return this.repository.update(id,{
       nome: data.nome,
     });
   }

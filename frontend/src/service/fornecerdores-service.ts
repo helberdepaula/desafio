@@ -14,6 +14,10 @@ import type {
 import { apiService } from "./requet-service";
 
 class FornecedorService {
+  async findSelect(params?: SearchFornecedorDto): Promise<Fornecedor[]> {
+    return apiService.get<Fornecedor[]>(`/fornecedores/list-json`, { params });
+  }
+
   async findAll(params?: SearchFornecedorDto): Promise<FornecedoreResult> {
     return apiService.get<FornecedoreResult>("/fornecedores", { params });
   }
@@ -70,6 +74,15 @@ class FornecedorService {
       data
     );
   }
+
+  async deleteContato(
+    contato_id: number
+  ): Promise<ContatosFornecedorCreateResponse> {
+    return apiService.delete<ContatosFornecedorCreateResponse>(
+      `/fornecedores/contato/${contato_id}`
+    );
+  }
+  
 }
 
 export const fornecedorService = new FornecedorService();

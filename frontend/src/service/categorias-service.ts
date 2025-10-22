@@ -13,6 +13,10 @@ class CategoriasService {
     return apiService.get<CategoriasResult>("/categorias", { params });
   }
 
+  async findSelect(params?: SearchCategoriaDto): Promise<Categorias[]> {
+    return apiService.get<Categorias[]>(`/categorias/list-json`, { params });
+  }
+
   async findId(id: number): Promise<Categorias> {
     return apiService.get<Categorias>(`/categorias/${id}`);
   }

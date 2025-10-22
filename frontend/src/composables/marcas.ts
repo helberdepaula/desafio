@@ -1,6 +1,11 @@
 import { ApiErrorHandler } from "@/service/error-handler-exceptions";
 import { marcasService } from "@/service/marcas-service";
-import type { CreateMarcaDto, Marca, SearchMarcaDto, UpdateMarcaDto } from "@/types/marcas.type";
+import type {
+  CreateMarcaDto,
+  Marca,
+  SearchMarcaDto,
+  UpdateMarcaDto,
+} from "@/types/marcas-type";
 import { ref, computed } from "vue";
 
 export function useMarcas() {
@@ -30,6 +35,19 @@ export function useMarcas() {
   const handleError = (err: any) => {
     const error = ApiErrorHandler.handle(err);
     errorMarca.value = error.message;
+  };
+
+  const findSelectMarca = async (params?: SearchMarcaDto) => {
+    try {
+      setLoading(true);
+      const response = await marcasService.findSelect(params);
+      marcas.value = response;
+    } catch (err) {
+      handleError(err);
+      marcas.value = [];
+    } finally {
+      setLoading(false);
+    }
   };
 
   const find = async (id: number) => {
@@ -140,6 +158,7 @@ export function useMarcas() {
     hasData,
     isEmpty,
     find,
+    findSelectMarca,
     fetchMarca,
     createMarca,
     updateMarca,

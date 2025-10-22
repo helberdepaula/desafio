@@ -68,28 +68,17 @@ export interface CreateFornecedorDto {
   bairro: string;
 }
 
-export interface UpdateFornecedorDto {
-  cnpj?: string;
-  nome?: string;
-  municipio_id?: number;
-  logradouro?: string;
-  cep?: string;
-  numero?: string;
-  complemento: string;
-  bairro?: string;
-}
-
-export interface FornecedorCreateResponse {
-  message: string;
-  data: Fornecedor;
-}
+export interface UpdateFornecedorDto extends Partial<CreateFornecedorDto> {}
 
 export interface FornecedorDeleteResponse {
   message: string;
 }
 
-export interface FornecedorUpdateResponse {
-  message: string;
+export interface FornecedorCreateResponse extends FornecedorDeleteResponse{
+  data: Fornecedor;
+}
+
+export interface FornecedorUpdateResponse extends FornecedorDeleteResponse{
   data: Fornecedor;
 }
 
@@ -97,8 +86,7 @@ export interface ContatosFornecedor {
   data: Contato[];
 }
 
-export interface ContatosFornecedorCreateResponse {
-  message: string;
+export interface ContatosFornecedorCreateResponse extends FornecedorDeleteResponse{
   data: Contato[];
 }
 

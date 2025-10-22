@@ -8,12 +8,14 @@ import {
   Delete,
   Query,
   UseGuards,
+  Request,
 } from '@nestjs/common';
 import { PedidosService } from './pedidos.service';
 import { CreatePedidoDto } from './dto/create-pedido.dto';
 import { UpdatePedidoDto } from './dto/update-pedido.dto';
 import { PedidoSearchDto } from './dto/pedido.search.dto';
 import {
+  ApiBearerAuth,
   ApiConflictResponse,
   ApiForbiddenResponse,
   ApiNotFoundResponse,
@@ -21,15 +23,20 @@ import {
   ApiOperation,
   ApiParam,
   ApiResponse,
+  ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { createPermissionsGuard } from '../auth/permissions.guard';
 import { getlistPedidoResponse } from './swagger/pedidos.swagger';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
+@ApiTags('Pedidos')
+@ApiBearerAuth('JWT-auth')
 @Controller('pedidos')
+@UseGuards(JwtAuthGuard)
 export class PedidosController {
   constructor(private readonly pedidosService: PedidosService) {}
-
+  
   @Get()
   @ApiOperation({ summary: 'Obter uma lista de pedidos com paginação' })
   @ApiResponse({
@@ -47,13 +54,13 @@ export class PedidosController {
 
   @Get(':id')
   @ApiParam({ name: 'id', type: 'number' })
-  @ApiOperation({ summary: 'Obtem registro de um usuário' })
+  @ApiOperation({ summary: 'Obtem registro de uma ordem de venda' })
   @ApiResponse({
     status: 200,
     ...{},
   })
   @ApiNotFoundResponse({
-    description: 'Usuário não encontrado ou não existe na base de dados',
+    description: 'Ordem não encontrado ou não existe na base de dados',
   })
   @ApiUnauthorizedResponse({ description: 'Não autorizado' })
   @ApiForbiddenResponse({
@@ -66,7 +73,7 @@ export class PedidosController {
 
   @Post()
   @ApiOperation({
-    summary: 'Cria um novo usuário no sistema com permissão de acesso',
+    summary: 'Criar uma ordem de venda',
   })
   @ApiResponse({
     status: 200,
@@ -80,35 +87,34 @@ export class PedidosController {
     description: 'Permissão insuficiente',
   })
   @UseGuards(createPermissionsGuard('CREATE'))
-  create(@Body() createPedidoDto: CreatePedidoDto) {
+  create(@Body() createPedidoDto: CreatePedidoDto, @Request() req) {
+    createPedidoDto.user_id = req.user.id;
     return this.pedidosService.create(createPedidoDto);
   }
 
-  @Patch(':id')
-  @ApiParam({ name: 'id', type: 'number' })
-  @ApiOperation({ summary: 'Atualiza os dados de um usuário já existente' })
-  @ApiResponse({
-    status: 200,
-    ...{},
-  })
+
+  @Delete('item/:id')
+  @ApiOperation({ summary: 'Cancelar um iten dentro do pedido existente existente' })
+  @ApiOkResponse({ description: 'Pedido cancelado com sucesso' })
+  @ApiConflictResponse({ description: 'O item foi já foi cancelado' })
   @ApiNotFoundResponse({
-    description: 'Usuário não encontrado ou não existe na base de dados',
+    description: 'Item não foi encontrado',
   })
   @ApiUnauthorizedResponse({ description: 'Não autorizado' })
   @ApiForbiddenResponse({
     description: 'Permissão insuficiente',
   })
-  @UseGuards(createPermissionsGuard('UDPATE'))
-  update(@Param('id') id: string, @Body() updatePedidoDto: UpdatePedidoDto) {
-    return this.pedidosService.update(+id, updatePedidoDto);
+  @UseGuards(createPermissionsGuard('DELETE'))
+  removeItem(@Param('id') id: string) {
+    return this.pedidosService.removeItem(+id);
   }
 
   @Delete(':id')
-  @ApiOperation({ summary: 'Cancelar  um pedido existente existente' })
-  @ApiOkResponse({ description: 'Pedido cancelado com sucesso' })
-  @ApiConflictResponse({ description: 'O pedido já foi cancelado' })
+  @ApiOperation({ summary: 'Cancelar um pedido existente existente' })
+  @ApiOkResponse({ description: 'Ordem cancelada com sucesso' })
+  @ApiConflictResponse({ description: 'A ordem já foi cancelado' })
   @ApiNotFoundResponse({
-    description: 'Pedido não encontrado',
+    description: 'Ordem não encontrada',
   })
   @ApiUnauthorizedResponse({ description: 'Não autorizado' })
   @ApiForbiddenResponse({

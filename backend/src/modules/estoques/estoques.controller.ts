@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Body, Param, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  UseGuards,
+  Query,
+  Request,
+} from '@nestjs/common';
 import { EstoquesService } from './estoques.service';
 import { CreateEstoqueDto } from './dto/create-estoque.dto';
 import { SearchEstoqueDto } from './dto/searchEstoque.dtos';
@@ -13,7 +22,7 @@ import {
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-import { getListEstoque } from './swagger/estoque.swagger';
+import { createrProdutoResponse, getListEstoque } from './swagger/estoque.swagger';
 import { createPermissionsGuard } from '../auth/permissions.guard';
 
 @ApiTags('Estoque')
@@ -34,7 +43,7 @@ export class EstoquesController {
     description: 'Permissão insuficiente',
   })
   @UseGuards(createPermissionsGuard('READ'))
-  findAll(searchEstoque: SearchEstoqueDto) {
+  findAll(@Query() searchEstoque: SearchEstoqueDto) {
     return this.estoquesService.findAll(searchEstoque);
   }
 
@@ -63,20 +72,18 @@ export class EstoquesController {
   })
   @ApiResponse({
     status: 200,
-    ...{},
+    ...createrProdutoResponse,
   })
   @ApiNotFoundResponse({
-    description: 'Produto não existe ou foi removido ',
-  })
-  @ApiNotFoundResponse({
-    description: 'Fornecedor não existe ou foi removido ',
+    description: 'Produto ou Fornecedor não encontrado.',
   })
   @ApiUnauthorizedResponse({ description: 'Não autorizado' })
   @ApiForbiddenResponse({
     description: 'Permissão insuficiente',
   })
   @UseGuards(createPermissionsGuard('CREATE'))
-  create(@Body() createEstoqueDto: CreateEstoqueDto) {
+  create(@Body() createEstoqueDto: CreateEstoqueDto, @Request() request) {
+    createEstoqueDto.user_id = request.user.id;
     return this.estoquesService.create(createEstoqueDto);
   }
 }

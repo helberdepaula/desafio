@@ -1,0 +1,1 @@
+#pasta física de relatorios gerados

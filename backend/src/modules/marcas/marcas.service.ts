@@ -1,4 +1,8 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { MarcasRepository } from './repositories/marcas.repository';
 import { CreateMarcaDto } from './dto/create-marca.dto';
 import { UpdateMarcaDto } from './dto/update-marca.dto';
@@ -11,6 +15,16 @@ export class MarcasService {
 
   findList(data: MarcasSearchDto) {
     return this.marcasRepository.findAll(data);
+  }
+
+  async find(id: number) {
+    const result = await this.marcasRepository.findByPK(id);
+    if (!result) {
+      throw new NotFoundException([
+        'Marca não existe ou foi removida da nossa base de dados',
+      ]);
+    }
+    return { id: result.id, nome: result.nome };
   }
 
   async findAll(queryParams: MarcasSearchDto) {
@@ -46,7 +60,7 @@ export class MarcasService {
       this.marcasRepository.findByNameISNOT(id, data.nome),
       this.marcasRepository.findByPK(id),
     ]);
-    console;
+
     if (exists) {
       throw new ConflictException([
         'Já existe uma marca com esse nome cadastrado no banco de dados',
@@ -54,8 +68,8 @@ export class MarcasService {
     }
 
     if (!marca) {
-      throw new ConflictException([
-        'A marca não foi encontraa ou não existe em nossa base de dados',
+      throw new NotFoundException([
+        'A marca não foi encontra ou não existe em nossa base de dados',
       ]);
     }
 

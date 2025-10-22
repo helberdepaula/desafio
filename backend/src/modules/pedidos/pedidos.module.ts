@@ -4,10 +4,24 @@ import { PedidosController } from './pedidos.controller';
 import { PedidosRepository } from './repositories/pedidos.repository';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Pedidos } from './entities/pedido.entity';
+import { ProdutosRepository } from '../produtos/repositories/produtos.repository';
+import { EstoquesRepository } from '../estoques/repositories/estoques.repository';
+import { Estoques } from '../estoques/entities/estoque.entity';
+import { Produtos } from '../produtos/entities/produto.entity';
+import { PedidoItensRepository } from './repositories/pedido.itens.repository';
+import { PedidoItens } from './entities/pedido.iten.entity';
 
 @Module({
-  imports:[TypeOrmModule.forFeature([Pedidos])],
+  imports: [
+    TypeOrmModule.forFeature([Pedidos, Estoques, Produtos, PedidoItens]),
+  ],
   controllers: [PedidosController],
-  providers: [PedidosService,PedidosRepository],
+  providers: [
+    PedidosService,
+    PedidosRepository,
+    ProdutosRepository,
+    EstoquesRepository,
+    PedidoItensRepository,
+  ],
 })
 export class PedidosModule {}

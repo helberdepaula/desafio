@@ -27,6 +27,7 @@ import {
   createrCotnatoFornecedores,
   createrFornecedores,
   getlistFornecedoresResponse,
+  getListJsonFoncedor,
   getUserDetail,
 } from './swagger/fornecedores.swagger';
 import { createPermissionsGuard } from '../auth/permissions.guard';
@@ -39,6 +40,21 @@ import { createFornecedorContatoDto } from './dto/create-fornecedor-contato.dto'
 @UseGuards(JwtAuthGuard)
 export class FornecedoresController {
   constructor(private readonly fornecedoresService: FornecedoresService) {}
+
+  @Get('list-json')
+  @ApiOperation({
+    summary: 'Obtem uma lista de fornecedor para uso em selects',
+  })
+  @ApiResponse({
+    status: 200,
+    ...getListJsonFoncedor,
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Não autorizado',
+  })
+  listJSON(@Query() data: SearchFornecedoreDto) {
+    return this.fornecedoresService.findList(data);
+  }
 
   @Get()
   @ApiOperation({ summary: 'Obter uma lista de fornecedores com paginação' })
@@ -145,9 +161,7 @@ export class FornecedoresController {
     description: 'Permissão insuficiente',
   })
   @UseGuards(createPermissionsGuard('READ'))
-  async getcontatoForencedor(
-    @Param('id') id: string,
-  ) {
+  async getcontatoForencedor(@Param('id') id: string) {
     return this.fornecedoresService.getContatoFornecedor(+id);
   }
 
@@ -172,5 +186,25 @@ export class FornecedoresController {
     @Body() data: createFornecedorContatoDto,
   ) {
     return this.fornecedoresService.createContato(+id, data);
+  }
+
+  @Delete('/contato/:id')
+  @ApiOperation({
+    summary: 'Remove um contato exitente de um fornecedor',
+  })
+  @ApiResponse({
+    status: 200,
+    ...createrCotnatoFornecedores,
+  })
+  @ApiNotFoundResponse({
+    description: 'O contato do fornecedor não existe ou foi removido da base de dados',
+  })
+  @ApiUnauthorizedResponse({ description: 'Não autorizado' })
+  @ApiForbiddenResponse({
+    description: 'Permissão insuficiente',
+  })
+  @UseGuards(createPermissionsGuard('DELETE'))
+  async deleteContato(@Param('id') id: string) {
+    return this.fornecedoresService.deleteContato(+id);
   }
 }
