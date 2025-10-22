@@ -25,7 +25,7 @@ export class FornecedoresService {
     private readonly contatoRepository: ContatosRepository,
   ) {}
 
-  findList(data:SearchFornecedoreDto) {
+  findList(data: SearchFornecedoreDto) {
     return this.fornecedoreRespository.findAll(data);
   }
 
@@ -164,8 +164,21 @@ export class FornecedoresService {
 
     const result = await Promise.all(
       data.contatos.map(async (data) => {
-        data.numero = data.numero.replace(/\D/g, '');
-        data.ddd = data.ddd.replace(/\D/g, '');
+        const contatoExist =
+          await this.contatoFornecedorRepository.contatoExist(id, data);
+
+        if (contatoExist) {
+          return {
+            id: contatoExist.id,
+            codigo: contatoExist.contato.codigo,
+            ddd: contatoExist.contato.ddd,
+            numero: contatoExist.contato.numero,
+          };
+        }
+
+        data.codigo = data.codigo.replace(/\D/g, '').trim();
+        data.numero = data.numero.replace(/\D/g, '').trim();
+        data.ddd = data.ddd.replace(/\D/g, '').trim();
         data.user_id = id;
         const contato = await this.contatoRepository.save(data);
         const restul = await this.contatoFornecedorRepository.save({
@@ -185,5 +198,21 @@ export class FornecedoresService {
       message: 'Contato do usuário foi criado com sucesso',
       data: result,
     };
+  }
+
+  @Transactional()
+  async deleteContato(id: number) {
+    const result = await this.contatoFornecedorRepository.findByPK(id);
+    if (!result) {
+      throw new NotFoundException([
+        'O contato do fornecedor não existe ou foi removido da base de dados',
+      ]);
+    }
+
+    //revovendo os contato de com hard delete
+    await this.contatoFornecedorRepository.delete(id);
+    await this.contatoRepository.delete(result.contato.id);
+
+    return { messsage: 'Contato removido com sucesso' };
   }
 }

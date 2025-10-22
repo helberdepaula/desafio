@@ -14,7 +14,6 @@ import type {
 import { apiService } from "./requet-service";
 
 class FornecedorService {
-
   async findSelect(params?: SearchFornecedorDto): Promise<Fornecedor[]> {
     return apiService.get<Fornecedor[]>(`/fornecedores/list-json`, { params });
   }
@@ -75,6 +74,15 @@ class FornecedorService {
       data
     );
   }
+
+  async deleteContato(
+    contato_id: number
+  ): Promise<ContatosFornecedorCreateResponse> {
+    return apiService.delete<ContatosFornecedorCreateResponse>(
+      `/fornecedores/contato/${contato_id}`
+    );
+  }
+  
 }
 
 export const fornecedorService = new FornecedorService();
