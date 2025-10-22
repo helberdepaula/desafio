@@ -1,7 +1,14 @@
 import { ApiErrorHandler } from "@/service/error-handler-exceptions";
 import { relatoriosService } from "@/service/relatorios-service";
 
-import type { Relatorio, SearchRelatorio } from "@/types/relatorios-types";
+import type { 
+  Relatorio, 
+  SearchRelatorio, 
+  SearchCritico, 
+  SearchEntrada, 
+  SearchValorBrutoMensal,
+  ReltorioResponse 
+} from "@/types/relatorios-types";
 import { ref, computed } from "vue";
 
 export function useRelatorio() {
@@ -57,6 +64,58 @@ export function useRelatorio() {
     clearError();
   };
 
+  const gerarRelatorioVencimento = async (): Promise<ReltorioResponse> => {
+    try {
+      setLoading(true);
+      const response = await relatoriosService.relatorioVencimento();
+      return response;
+    } catch (err) {
+      handleError(err);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const gerarRelatorioCritico = async (params: SearchCritico): Promise<ReltorioResponse> => {
+    try {
+      setLoading(true);
+      const response = await relatoriosService.relatorioCritico(params);
+      return response;
+    } catch (err) {
+      handleError(err);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const gerarRelatorioEntradaEstoque = async (params: SearchEntrada): Promise<ReltorioResponse> => {
+    try {
+      setLoading(true);
+      const response = await relatoriosService.relatorioEntradaEstoque(params);
+      return response;
+    } catch (err) {
+      handleError(err);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const gerarRelatorioValorBrutoMensal = async (params: SearchValorBrutoMensal): Promise<ReltorioResponse> => {
+    try {
+      setLoading(true);
+      const response = await relatoriosService.relatorioValorBrutoMensal(params);
+      return response;
+    } catch (err) {
+      handleError(err);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return {
     relatorios,
     relatorio,
@@ -71,5 +130,9 @@ export function useRelatorio() {
     fetchRelatorio,
     clearData,
     clearError,
+    gerarRelatorioVencimento,
+    gerarRelatorioCritico,
+    gerarRelatorioEntradaEstoque,
+    gerarRelatorioValorBrutoMensal,
   };
 }

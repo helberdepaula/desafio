@@ -101,6 +101,11 @@ const linksNav = [
     to: '/fornecedores',
     icon: 'mdi-truck',
   },
+  {
+    title: 'Relatórios',
+    to: '/relatorios',
+    icon: 'mdi-chart-line',
+  },
 
 ]
 

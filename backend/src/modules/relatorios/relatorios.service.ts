@@ -14,10 +14,9 @@ import { EstoqueValorBrutoRelatorioDto } from './dto/estoque.valorbruto.relatori
 @Injectable()
 export class RelatoriosService {
   constructor(
-    private readonly ExcelService: ExcelService,
     private readonly relatoriosRepository: RelatoriosRepository,
     private readonly relatorioQueueService: RelatorioQueueService,
-  ) {}
+  ) { }
 
   async findAll(queryParams: RelatorioSearchDto) {
     const limit = Number(process.env.LIMIT_PAGINATION) || 0;
@@ -39,9 +38,9 @@ export class RelatoriosService {
       nome: 'proximo_vencimento',
       start: new Date(),
       user: { id: queryParams.user_id },
-      status: 'START',
+      status: 'SOLICITADO',
     });
-    this.proximoVencimentoXls(resutl);
+    await this.relatorioQueueService.sendProximoVencimento(queryParams, resutl.id);
     return { message: 'Solicitação de relatório realizada com sucesso' };
   }
 
@@ -50,11 +49,10 @@ export class RelatoriosService {
       nome: 'estoque_critico',
       start: new Date(),
       user: { id: queryParams.user_id },
-      status: 'START',
+      status: 'SOLICITADO',
     });
 
-    this.estoqueCriticoXls(resutl, queryParams);
-
+    await this.relatorioQueueService.sendEstoqueCritico(queryParams, resutl.id);
     return { message: 'Solicitação de relatório realizada com sucesso' };
   }
 
@@ -63,9 +61,10 @@ export class RelatoriosService {
       nome: 'estoque_entrada',
       start: new Date(),
       user: { id: queryParams.user_id },
-      status: 'START',
+      status: 'SOLICITADO',
     });
-    this.estoqueEntradaXls(resutl, queryParams);
+
+    await this.relatorioQueueService.sendEstoqueEntrada(queryParams, resutl.id);
     return { message: 'Solicitação de relatório realizada com sucesso' };
   }
 
@@ -74,162 +73,10 @@ export class RelatoriosService {
       nome: 'valor_bruto_mensal',
       start: new Date(),
       user: { id: queryParams.user_id },
-      status: 'START',
+      status: 'SOLICITADO',
     });
 
-    this.valorBrutoMensalXls(resutl, queryParams);
-
+    await this.relatorioQueueService.sendValorBrutoMensal(queryParams, resutl.id);
     return { message: 'Solicitação de relatório realizada com sucesso' };
-  }
-
-  private async proximoVencimentoXls(data: Relatorios) {
-    setTimeout(async () => {
-      const headers: Array<Partial<ExcelJS.Column>> = [
-        { header: 'ID', key: 'id', width: 10 },
-        { header: 'Data de vecimento', key: 'data_vencimento', width: 30 },
-        { header: 'Quantidade', key: 'quantidade', width: 10 },
-        { header: 'Lote', key: 'sku', width: 10 },
-        { header: 'seção', key: 'secao', width: 10 },
-        { header: 'corredor', key: 'corredo', width: 10 },
-        { header: 'Prateleira', key: 'prateleira', width: 10 },
-      ];
-
-      const body = await this.relatoriosRepository.relatorioProximoVencimento();
-      const pacth =
-        dirname(dirname(dirname(__dirname))) +
-        `/relatorios/${new Date().getTime()}_proximo_vencimento.xlsx`;
-      this.ExcelService.generateReport('teste', headers, body, pacth)
-        .then(async (res) => {
-          await this.relatoriosRepository.update(data.id, {
-            path: pacth,
-            status: 'FINISHED',
-            end: new Date(),
-          });
-        })
-        .catch(async (error) => {
-          await this.relatoriosRepository.update(data.id, {
-            status: 'FAIL',
-            log: JSON.stringify(error),
-            end: new Date(),
-          });
-        });
-    }, 9000);
-    console.log('Relatorio enviado para o processamento');
-  }
-
-  private async estoqueCriticoXls(
-    data: Relatorios,
-    queryParams: EstoqueCriticoRelatorioDto,
-  ) {
-    setTimeout(async () => {
-      const headers: Array<Partial<ExcelJS.Column>> = [
-        { header: 'ID', key: 'id', width: 10 },
-        { header: 'Produto', key: 'nome', width: 30 },
-        { header: 'Quantidade', key: 'quantidade', width: 10 },
-        { header: 'Lote', key: 'sku', width: 10 },
-        { header: 'seção', key: 'secao', width: 10 },
-        { header: 'corredor', key: 'corredo', width: 10 },
-        { header: 'Prateleira', key: 'prateleira', width: 10 },
-      ];
-
-      const body = await this.relatoriosRepository.estoqueCritico(
-        queryParams.sku,
-      );
-      const pacth =
-        dirname(dirname(dirname(__dirname))) +
-        `/relatorios/${new Date().getTime()}_estoque_critico.xlsx`;
-      this.ExcelService.generateReport('teste', headers, body, pacth)
-        .then(async (res) => {
-          await this.relatoriosRepository.update(data.id, {
-            path: pacth,
-            status: 'FINISHED',
-            end: new Date(),
-          });
-        })
-        .catch(async (error) => {
-          await this.relatoriosRepository.update(data.id, {
-            status: 'FAIL',
-            log: JSON.stringify(error),
-            end: new Date(),
-          });
-        });
-    }, 9000);
-    console.log('Relatorio enviado para o processamento');
-  }
-
-  private async estoqueEntradaXls(
-    data: Relatorios,
-    queryParams: EstoqueEntradaRelatorioDto,
-  ) {
-    setTimeout(async () => {
-      const headers: Array<Partial<ExcelJS.Column>> = [
-        { header: 'ID', key: 'id', width: 10 },
-        { header: 'Produto', key: 'nome', width: 30 },
-        { header: 'Quantidade', key: 'quantidade', width: 10 },
-        { header: 'Lote', key: 'sku', width: 10 },
-        { header: 'Seção', key: 'secao', width: 10 },
-        { header: 'Corredor', key: 'corredo', width: 10 },
-        { header: 'Prateleira', key: 'prateleira', width: 10 },
-        { header: 'Data da entrada', key: 'created_at', width: 10 },
-      ];
-
-      const body = await this.relatoriosRepository.estoqueEntrada(queryParams);
-      const pacth =
-        dirname(dirname(dirname(__dirname))) +
-        `/relatorios/${new Date().getTime()}_entrada_estoque.xlsx`;
-      this.ExcelService.generateReport('teste', headers, body, pacth)
-        .then(async (res) => {
-          await this.relatoriosRepository.update(data.id, {
-            path: pacth,
-            status: 'FINISHED',
-            end: new Date(),
-          });
-        })
-        .catch(async (error) => {
-          await this.relatoriosRepository.update(data.id, {
-            status: 'FAIL',
-            log: JSON.stringify(error),
-            end: new Date(),
-          });
-        });
-    }, 9000);
-    console.log('Relatorio enviado para o processamento');
-  }
-
-  private async valorBrutoMensalXls(
-    data: Relatorios,
-    queryParams: EstoqueValorBrutoRelatorioDto,
-  ) {
-    setTimeout(async () => {
-      const headers: Array<Partial<ExcelJS.Column>> = [
-        { header: 'ID', key: 'id', width: 10 },
-        { header: 'Ano da venda', key: 'ano_da_venda', width: 30 },
-        { header: 'Mês da Venda', key: 'mes_da_venda', width: 10 },
-        { header: 'Total em vendas', key: 'total_venda', width: 10 },
-        { header: 'Lucro Obtido', key: 'spread_bruto', width: 10 },
-      ];
-
-      const body =
-        await this.relatoriosRepository.valorBrutoMensal(queryParams);
-      const pacth =
-        dirname(dirname(dirname(__dirname))) +
-        `/relatorios/${new Date().getTime()}_valor_buto_mensal.xlsx`;
-      this.ExcelService.generateReport('teste', headers, body, pacth)
-        .then(async (res) => {
-          await this.relatoriosRepository.update(data.id, {
-            path: pacth,
-            status: 'FINISHED',
-            end: new Date(),
-          });
-        })
-        .catch(async (error) => {
-          await this.relatoriosRepository.update(data.id, {
-            status: 'FAIL',
-            log: JSON.stringify(error),
-            end: new Date(),
-          });
-        });
-    }, 300);
-    console.log('Relatorio enviado para o processamento');
   }
 }

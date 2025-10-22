@@ -68,4 +68,4 @@ import { RelatorioQueueModule } from './modules/relatorio-queue/relatorio-queue.
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }

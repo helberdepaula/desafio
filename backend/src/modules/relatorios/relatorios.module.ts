@@ -5,21 +5,17 @@ import { RelatoriosRepository } from './repositories/relatorios.repository';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Relatorios } from './entities/Relatorios.entity';
 import { ExcelService } from '../common/excel.service';
-import { RelatorioQueueService } from '../relatorio-queue/relatorio-queue.service';
-import { BullModule } from '@nestjs/bull';
+import { RelatorioQueueModule } from '../relatorio-queue/relatorio-queue.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Relatorios]),
-    BullModule.registerQueue({
-      name: 'relatorio-queue',
-    }),
+    RelatorioQueueModule,
   ],
   providers: [
     RelatoriosService,
     RelatoriosRepository,
     ExcelService,
-    RelatorioQueueService,
   ],
   controllers: [RelatoriosController],
   exports: [RelatoriosRepository],

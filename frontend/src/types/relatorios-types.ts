@@ -6,6 +6,8 @@ export interface SearchRelatorio {
   limit?: number;
   page?: number;
   nome?: string;
+  tipo?: string;
+  status?: string;
 }
 
 export interface SearchValorBrutoMensal {
@@ -19,7 +21,7 @@ export interface SearchEntrada {
 }
 
 export interface SearchCritico {
-  sku: string;
+  sku?: string;
 }
 
 export interface RelatorioResult {

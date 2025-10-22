@@ -23,7 +23,7 @@ class RelatoriosService {
     });
   }
 
-  async realatorioEntradaEstoque(
+  async relatorioEntradaEstoque(
     params: SearchEntrada
   ): Promise<ReltorioResponse> {
     return apiService.get<ReltorioResponse>(`/relatorios/entrada`, {

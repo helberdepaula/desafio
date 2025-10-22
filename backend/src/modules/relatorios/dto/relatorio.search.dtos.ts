@@ -24,4 +24,20 @@ export class RelatorioSearchDto {
   })
   @IsOptional()
   page?: number;
+
+  @ApiProperty({
+    description: 'Tipo do relatório',
+    required: false,
+  })
+  @IsString({ message: 'O tipo do relatório deve ser uma string' })
+  @IsOptional()
+  tipo?: string;
+
+  @ApiProperty({
+    description: 'Status do relatório',
+    required: false,
+  })
+  @IsString({ message: 'O status do relatório deve ser uma string' })
+  @IsOptional()
+  status?: string;
 }

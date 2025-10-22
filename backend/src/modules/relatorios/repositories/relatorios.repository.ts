@@ -29,6 +29,14 @@ export class RelatoriosRepository extends Repository<Relatorios> {
       whereParam.nome = Raw((alias) => `${alias} ILIKE '%${filter.nome}%'`);
     }
 
+    if (filter.tipo) {
+      whereParam.nome = Raw((alias) => `${alias} ILIKE '%${filter.tipo}%'`);
+    }
+
+    if (filter.status) {
+      whereParam.status = filter.status;
+    }
+
     const offset =
       (Number(filter?.page) - 1 || 1 - 1) * Number(filter.limit || limit);
     return await this.repository.findAndCount({
