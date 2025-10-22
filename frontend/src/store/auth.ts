@@ -33,7 +33,6 @@ export const useAuthStore = defineStore("auth", {
       this.isLoading = false;
       try {
         //criando o service para o request dar api
-        console.log(credentials);
         const response = await authService.login(credentials);
 
         this.token = response.access_token;
@@ -42,12 +41,12 @@ export const useAuthStore = defineStore("auth", {
         await this.loadProfile();
 
         return true;
-      } catch (error) {
-        this.error = ApiErrorHandler.handle(error);
+      } catch (_error) {
+        this.error = ApiErrorHandler.handle(_error);
         this.user = null;
         this.token = null;
         this.isAuthenticated = false;
-        throw error;
+        throw _error;
       }
     },
     async loadProfile(): Promise<void> {

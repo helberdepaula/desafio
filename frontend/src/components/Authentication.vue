@@ -25,8 +25,11 @@
               v-model="password.value.value" :error-messages="password.errorMessage.value" variant="outlined"
               @click:append-inner="visible = !visible"></v-text-field>
           </v-col>
+          <v-col cols="12" sm="12" v-if="hasError">
+            {{ hasError }}
+          </v-col>
           <v-col cols="12" sm="12">
-            <v-btn class="mb-8" color="blue" size="large" variant="tonal" block type="submit">
+            <v-btn class="mb-8" color="blue" :loading="loading" size="large" variant="tonal" block type="submit">
               Entrar
             </v-btn>
           </v-col>
@@ -38,12 +41,15 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { useField, useForm } from 'vee-validate'
 import { useAuth } from '@/composables/auth';
+import useToastCustom from '@/composables/toastCustom';
 const visible = ref(false)
+const hasError = ref('')
 const valid = true;
-const authStore = useAuth();
+const { login, errorLogin, loading } = useAuth();
+const toast = new useToastCustom()
 
 const { handleSubmit, handleReset } = useForm({
   validationSchema: {
@@ -63,10 +69,16 @@ const password = useField('password')
 const email = useField('email')
 
 const submitForm = handleSubmit(async (values) => {
-  await authStore.login({
+  await login({
     email: values.email,
     password: values.password,
   });
 });
+
+watch(errorLogin, (newError) => {
+  if (newError) {
+    hasError.value = newError
+  }
+})
 
 </script>
