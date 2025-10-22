@@ -72,9 +72,11 @@ docker compose up --build
 ### 4. Acessar a aplicação
 
 - **Frontend**: http://localhost:8080
-- **Backend**: http://localhost:3001
-- **Migroservice**: http://localhost:3002
+- **Backend**: http://localhost:3000
+- **Migroservice**: http://localhost:3001
 - **Database**: localhost:5432
+- **Documentação swagger**: http://localhost:3000/docs
+- **Documentação swagger para importar**: http://localhost:3000s/swagger/jsons
 
 
 
