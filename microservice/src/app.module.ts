@@ -28,13 +28,14 @@ import { databaseConfig } from './config/datasource';
     BullModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: async (configService: ConfigService) => ({
+      useFactory: async (configService: ConfigService) => {
+        return ({
         redis: {
           host: configService.get('REDIS_HOST'),
           port: Number(configService.get('REDIS_PORT')),
           password: configService.get('REDIS_PASSWORD'),
         },
-      }),
+      })},
     }),
     UsersModule,
     RelatoriosModule,

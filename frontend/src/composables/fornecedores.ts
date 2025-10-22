@@ -172,6 +172,19 @@ export function useFornecedores() {
       const response = await fornecedorService.createContato(fornecedor_id, {
         contatos: data,
       });
+      return response;
+    } catch (err) {
+      handleError(err);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const removerContato = async (contato_id: number) => {
+    try {
+      setLoading(true);
+      const response = await fornecedorService.deleteContato(contato_id);
 
       if (response.data) {
         //  contatosFornecedo.value.unshift(response);
@@ -211,6 +224,7 @@ export function useFornecedores() {
     createFornecedor,
     updateFornecedor,
     removeFornecedor,
+    removerContato,
     getContatoFornecedor,
     createContatoFornecedor,
     clearData,

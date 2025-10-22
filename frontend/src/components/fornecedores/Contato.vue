@@ -15,44 +15,21 @@
 
         <div v-for="field in formFields" :key="field.id" class="form-field-group">
             <v-row>
-                <v-col cols="2">
-                    <v-text-field
-                        v-model="field.codigo"
-                        label="Código"
-                        :rules="[rules.required]"
-                        variant="outlined"
-                        density="compact"
-                    ></v-text-field>
-                </v-col>
-                <v-col cols="2">
-                    <v-text-field
-                        v-model="field.ddd"
-                        label="DDD"
-                        :rules="[rules.required, rules.ddd]"
-                        variant="outlined"
-                        density="compact"
-                        maxlength="2"
-                    ></v-text-field>
-                </v-col>
-                <v-col cols="3">
-                    <v-text-field
-                        v-model="field.numero"
-                        label="Número"
-                        :rules="[rules.required, rules.telefone]"
-                        variant="outlined"
-                        density="compact"
-                    ></v-text-field>
+                <v-col cols="1">
+                    <v-mask-input v-model="field.codigo" :rules="[rules.required]" :mask="codeMask"
+                        :readonly="(field.existingId || 0) > 0" label="Código" />
                 </v-col>
                 <v-col cols="1">
-                    <v-btn 
-                        type="button" 
-                        @click="removeField(field.id)" 
-                        class="mt-1" 
-                        color="error"
-                        icon
-                        size="small"
-                        :disabled="formFields.length === 1"
-                    >
+                    <v-mask-input v-model="field.ddd" :rules="[rules.required, rules.ddd]" :mask="dddMask" label="DDD"
+                        :readonly="(field.existingId || 0) > 0" />
+                </v-col>
+                <v-col cols="3">
+                    <v-mask-input v-model="field.numero" :rules="[rules.required, rules.telefone]"
+                        :readonly="(field.existingId || 0) > 0" :mask="phoneNumberMask" label="Número" />
+                </v-col>
+                <v-col cols="1">
+                    <v-btn type="button" @click="removeField(field.id, (field.existingId || 0))" class="mt-1"
+                        color="error" icon size="small" :disabled="formFields.length === 1">
                         <v-icon icon="mdi-trash-can-outline"></v-icon>
                     </v-btn>
                 </v-col>
@@ -82,7 +59,28 @@ const route = useRoute();
 const router = useRouter();
 const toast = new useToastCustom();
 const { id } = route.params as { id: string };
-const { createContatoFornecedor, contatosFornecedo, getContatoFornecedor, loading } = useFornecedores()
+const { createContatoFornecedor, contatosFornecedo, getContatoFornecedor, loading, removerContato } = useFornecedores()
+
+const codeMask = {
+    mask: '+##',
+    tokens: {
+        '#': { pattern: /[0-9]/ }
+    }
+};
+
+const dddMask = {
+    mask: '(##)',
+    tokens: {
+        '#': { pattern: /[0-9]/ }
+    }
+};
+
+const phoneNumberMask = {
+    mask: '# ####-####',
+    tokens: {
+        '#': { pattern: /[0-9]/ }
+    }
+};
 
 const formFields = ref<ContatoFormField[]>([
     { id: 1, codigo: '', ddd: '', numero: '' }
@@ -92,7 +90,7 @@ const rules = {
     required: (value: string) => !!value || 'Campo obrigatório',
     ddd: (value: string) => {
         if (!value) return 'DDD é obrigatório';
-        if (value.length !== 2) return 'DDD deve ter 2 dígitos';
+        if (value.trim().length < 2) return 'DDD deve ter 2 dígitos';
         return true;
     },
     telefone: (value: string) => {
@@ -113,16 +111,20 @@ const addField = () => {
     });
 };
 
-const removeField = (idToRemove: number) => {
+const removeField = async(idToRemove: number, existingId: number) => {
+
     if (formFields.value.length > 1) {
         formFields.value = formFields.value.filter(field => field.id !== idToRemove);
+        if (existingId) {
+            await removerContato(Number(existingId))
+        }
     }
 };
 
 const hasValidContatos = computed(() => {
-    return formFields.value.some(field => 
-        field.codigo.trim() !== '' && 
-        field.ddd.trim() !== '' && 
+    return formFields.value.some(field =>
+        field.codigo.trim() !== '' &&
+        field.ddd.trim() !== '' &&
         field.numero.trim() !== ''
     );
 });
@@ -134,7 +136,7 @@ const validateForm = () => {
                 toast.error('Todos os campos do contato devem ser preenchidos');
                 return false;
             }
-            if (field.ddd.length !== 2) {
+            if (field.ddd.trim().length < 2) {
                 toast.error('DDD deve ter exatamente 2 dígitos');
                 return false;
             }
@@ -150,7 +152,7 @@ const validateForm = () => {
 const handleSubmit = async () => {
     if (!validateForm()) return;
 
-    const validContatos = formFields.value.filter(field => 
+    const validContatos = formFields.value.filter(field =>
         field.codigo.trim() && field.ddd.trim() && field.numero.trim()
     );
 
@@ -179,7 +181,7 @@ const loadExistingContatos = () => {
     if (contatosFornecedo.value && contatosFornecedo.value.length > 0) {
         formFields.value = contatosFornecedo.value.map((contato, index) => ({
             id: index + 1,
-            codigo: contato.codigo,
+            codigo: `+${contato.codigo}`,
             ddd: contato.ddd,
             numero: contato.numero,
             isExisting: true,
@@ -199,17 +201,3 @@ onMounted(async () => {
     await getContatoFornecedor(Number(id));
 });
 </script>
-
-
-<style scoped>
-.form-field-group {
-    margin-bottom: 16px;
-    padding: 12px;
-    border-radius: 8px;
-    background-color: #f9f9f9;
-}
-
-.form-field-group:hover {
-    background-color: #f5f5f5;
-}
-</style>
