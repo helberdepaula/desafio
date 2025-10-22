@@ -14,7 +14,7 @@
 
 ## 💡Objetivo
 
-DO principio desse sistema é permitir o controle preciso de entrada e saída de
+Do principio desse sistema é permitir o controle preciso de entrada e saída de
 produtos alimentícios do estoque. Para isso, será necessário registrar uma série de
 informações detalhadas. Cada produto deverá conter seu nome, um código único
 de identificação, uma breve descrição e a data de validade, .... Além disso, o
@@ -59,6 +59,7 @@ essencial para rastreabilidade, especialmente em casos de recall.
 ### 1. Clone o repositório e navegue até a pasta
 
 ```bash
+# Esta pasta é um exemplo você deve entrar na pasta que clonou o repositório
 cd stockproduct
 ```
 ### 2. Execute com Docker Compose
