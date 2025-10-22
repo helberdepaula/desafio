@@ -118,6 +118,7 @@ const removeField = async(idToRemove: number, existingId: number) => {
         if (existingId) {
             await removerContato(Number(existingId))
         }
+
     }
 };
 
@@ -201,3 +202,4 @@ onMounted(async () => {
     await getContatoFornecedor(Number(id));
 });
 </script>
+
