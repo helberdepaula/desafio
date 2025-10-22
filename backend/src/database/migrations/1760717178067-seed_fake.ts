@@ -3,6 +3,11 @@ import { MigrationInterface, QueryRunner } from 'typeorm';
 export class SeedFake1760717178067 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`
+            insert into unidades (id, nome) values (1, 'Kilograma');
+            insert into unidades (id, nome) values (2, 'Litro');
+            insert into unidades (id, nome) values (3, 'Gramas');
+            insert into unidades (id, nome) values (4, 'Unidade');
+
             insert into regioes (id, nome) values (1, 'Norte');
             insert into regioes (id, nome) values (2, 'Nordeste');
             insert into regioes (id, nome) values (3, 'Sudeste');

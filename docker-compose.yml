@@ -29,6 +29,9 @@ services:
       DB_DATABASE: "estoque"
       JWT_SECRET: "uuyspxoox88sfdsf2ad11YYY88sU&ppQ"
       NODE_ENV: "production"
+      REDIS_HOST: "redis-14300.c16.us-east-1-2.ec2.redns.redis-cloud.com"
+      REDIS_PORT: 14300
+      REDIS_PASSWORD: "t3LDq8RK3pbL3m0bppTWJmn7c7xMGOIM"
       PORT: 3000
     ports:
       - '3000:3000'
@@ -39,6 +42,31 @@ services:
     networks:
       - desafio_network
 
+  microservice:
+    build:
+      context: ./microservice
+      dockerfile: Dockerfile
+    container_name: desafio_microservice
+    restart: always
+    environment:
+      DB_HOST: "database"
+      DB_PORT: 5432
+      DB_USERNAME: "postgres"
+      DB_PASSWORD: 1212
+      DB_DATABASE: "estoque"
+      REDIS_HOST: "redis-14300.c16.us-east-1-2.ec2.redns.redis-cloud.com"
+      REDIS_PORT: 14300
+      REDIS_PASSWORD: "t3LDq8RK3pbL3m0bppTWJmn7c7xMGOIM"
+      PORT: 3001
+    ports:
+      - '3001:3001'
+    depends_on:
+      - database
+    volumes:
+      - ./microservice/relatorios:/app/relatorios
+    networks:
+      - desafio_network
+
   frontend:
     build:
       context: ./frontend
@@ -46,13 +74,15 @@ services:
     container_name: desafio_frontend
     restart: always
     environment:
-      VITE_API_URL: "http://localhost:3001"
+      VITE_API_URL: "http://localhost:3000"
+      VITE_DOWNLOAD_URL: "http://localhost:3002/download/"
       NODE_ENV: "production"
     ports:
       - "80:80"
       - "8080:8080"
     depends_on:
       - backend
+      - microservice
     networks:
       - desafio_network
 
